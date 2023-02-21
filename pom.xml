@@ -69,6 +69,13 @@
 			<!-- JDK 7이상, JDBC 4.1 이상이므로 dbcp2 -->
 			<version>2.9.0</version>
 		</dependency>
+
+		<!-- json 파일 작업 라이브러리 -->
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>
