@@ -1,7 +1,5 @@
 package com.tftf.musictaggerserver;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -11,17 +9,14 @@ import java.io.FileReader;
 import java.io.IOException;
 
 @RestController
-
-
 public class MetadataController {
-    final String metaPath = "src\\main\\resources\\meta\\meta.json";
+    final String metaPath = "src\\main\\resources\\meta\\metaf.json";
 
-    @GetMapping(value = "/meta")
-    @ResponseBody
-    public metaDTO getMeta(@RequestParam int code){
+    @GetMapping("/metadata")
+    public metaDTO getMeta(@RequestParam String code){
 
         JSONParser parser = new JSONParser();
-        metaDTO result = null;
+
         try {
             FileReader reader = new FileReader(metaPath);
             Object obj = parser.parse(reader);
@@ -34,13 +29,13 @@ public class MetadataController {
             String year = (String) meta.get("year");
 
 
-            result = new metaDTO(title,singer,year);
-
+            metaDTO result = new metaDTO(title,singer,year);
+            return result;
 
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
-        return result;
+      return null;
     }
 
 }
