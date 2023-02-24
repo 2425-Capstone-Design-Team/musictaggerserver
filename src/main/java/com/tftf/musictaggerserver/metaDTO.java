@@ -10,7 +10,7 @@ public class metaDTO {
 
 //    File image;
 
-    public metaDTO(String title, String singer, String year){
+    public metaDTO(String title, String artist, String year){
         this.title=title;
         this.singer=singer;
         this.year=year;

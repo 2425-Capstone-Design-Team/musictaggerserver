@@ -1,5 +1,6 @@
 package com.tftf.musictaggerserver;
 
+import com.mysql.cj.xdevapi.JsonArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -10,32 +11,28 @@ import java.io.IOException;
 
 @RestController
 public class MetadataController {
-    final String metaPath = "src\\main\\resources\\meta\\metaf.json";
+    final String metaPath = "src\\main\\resources\\metadata\\metaf.json";
 
     @GetMapping("/metadata")
-    public metaDTO getMeta(@RequestParam String code){
+    public @ResponseBody Music getMetadata(@RequestParam("title") String title){
 
         JSONParser parser = new JSONParser();
 
         try {
             FileReader reader = new FileReader(metaPath);
-            Object obj = parser.parse(reader);
-            JSONObject jsonObject = (JSONObject) obj;
-
+            JSONObject jsonObject = (JSONObject) parser.parse(reader);
             reader.close();
-            JSONObject meta = (JSONObject) jsonObject.get(code);
-            String title = (String) meta.get("title");
-            String singer = (String) meta.get("singer");
-            String year = (String) meta.get("year");
 
+            JSONObject metaObj = (JSONObject) jsonObject.get(title);
 
-            metaDTO result = new metaDTO(title,singer,year);
-            return result;
+            return new Music(title, metaObj.get("album").toString(), metaObj.get("artist").toString(),
+                    (Long)metaObj.get("duration"), metaObj.get("path").toString(), metaObj.get("artUri").toString());
 
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
-      return null;
+
+        return null;
     }
 
 }
