@@ -17,7 +17,7 @@ public class MediaController {
     final String mediaPath = "src\\main\\resources\\media\\";
 
     @GetMapping(value="/media")
-    public void mp4Stream (HttpServletRequest request , HttpServletResponse response, @RequestParam("name") String mediaFileName) throws IOException {
+    public void mp4Stream (HttpServletRequest request , HttpServletResponse response, @RequestParam("title") String mediaFileName) throws IOException {
         File file = new File(mediaPath + mediaFileName);
         RandomAccessFile randomFile = new RandomAccessFile(file, "r");
         long rangeStart; //요청 범위의 시작 위치
