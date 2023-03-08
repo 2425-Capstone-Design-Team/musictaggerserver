@@ -76,6 +76,19 @@
 			<artifactId>json-simple</artifactId>
 			<version>1.1</version>
 		</dependency>
+
+		<!-- mp3 메타데이터 분석 라이브러리 -->
+		<dependency>
+			<groupId>org.apache.tika</groupId>
+			<artifactId>tika-core</artifactId>
+			<version>2.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tika</groupId>
+			<artifactId>tika-parsers</artifactId>
+			<version>2.7.0</version>
+			<type>pom</type>
+		</dependency>
 	</dependencies>
 
 	<build>

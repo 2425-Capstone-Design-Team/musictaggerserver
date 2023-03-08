@@ -1,10 +1,47 @@
-{
-  "star walkin":
+[
   {
-    "album": "Bravo: The Hits 2022",
-    "artist": "Lil Nas X",
-    "duration": 213000,
-    "path": "test_audio1.mp3",
-    "artUri": "None"
+    "id": 1000,
+    "title": "가을 아침",
+    "album": "꽃갈피 둘",
+    "artist": "아이유",
+    "duration": 218000,
+    "path": "1000.mp3",
+    "artUri": "artImg_0.jpg"
+  },
+  {
+    "id": 1001,
+    "title": "밤편지",
+    "album": "밤편지",
+    "artist": "아이유",
+    "duration": 253000,
+    "path": "1001.mp3",
+    "artUri": "artImg_1.jpg"
+  },
+  {
+    "id": 1002,
+    "title": "Blueming",
+    "album": "Love poem",
+    "artist": "아이유",
+    "duration": 217000,
+    "path": "1002.mp3",
+    "artUri": "artImg_2.jpg"
+  },
+  {
+    "id": 1003,
+    "title": "Love poem",
+    "album": "꽃갈피 둘",
+    "artist": "아이유",
+    "duration": 258000,
+    "path": "1003.mp3",
+    "artUri": "artImg_3.jpg"
+  },
+  {
+    "id": 1004,
+    "title": "비",
+    "album": "비",
+    "artist": "폴킴",
+    "duration": 237000,
+    "path": "1004.mp3",
+    "artUri": "artImg_4.jpg"
   }
-}
+]
