@@ -27,7 +27,7 @@ public class PlaytimeHistoryDAO {
     }
 
     public void update(String emailAndMusicId, String tagInfo) {
-        String updateMemberSQL = "Update playtimeHistoryTable tagInfo = ? Where emailAndMusicId = ?";
+        String updateMemberSQL = "Update playtimeHistoryTable Set tagInfo = ? Where emailAndMusicId = ?";
         jdbcTemplate.update(updateMemberSQL, tagInfo, emailAndMusicId);
     }
 
