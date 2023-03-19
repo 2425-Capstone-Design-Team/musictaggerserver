@@ -21,7 +21,7 @@ public class PlaytimeHistoryDAO {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public void insert(String emailAndMusicId, JSONObject tagInfo) {
+    public void insert(String emailAndMusicId, String tagInfo) {
         String insertMemberSQL = "Insert Into playtimeHistoryTable Values(?, ?)";
         jdbcTemplate.update(insertMemberSQL, emailAndMusicId, tagInfo);
     }

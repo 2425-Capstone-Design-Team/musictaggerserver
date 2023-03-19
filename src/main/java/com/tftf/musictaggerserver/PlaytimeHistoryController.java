@@ -14,7 +14,7 @@ public class PlaytimeHistoryController {
 
     @PostMapping(value="/insert")
     public void insert(@RequestParam("emailAndMusicId") String emailAndMusicId, @RequestBody JSONObject tagInfo) {
-        playtimeHistoryDAO.insert(emailAndMusicId, tagInfo);
+        playtimeHistoryDAO.insert(emailAndMusicId, tagInfo.toJSONString());
     }
 
     @PostMapping(value="/delete")
@@ -23,8 +23,8 @@ public class PlaytimeHistoryController {
     }
 
     @PostMapping(value="/update")
-    public void update(@RequestParam("emailAndMusicId") String emailAndMusicId, @RequestParam("tagInfo") String tagInfo) {
-        playtimeHistoryDAO.update(emailAndMusicId, tagInfo);
+    public void update(@RequestParam("emailAndMusicId") String emailAndMusicId, @RequestBody JSONObject tagInfo) {
+        playtimeHistoryDAO.update(emailAndMusicId, tagInfo.toJSONString());
     }
 
     @PostMapping(value="/select")
