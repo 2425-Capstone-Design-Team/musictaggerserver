@@ -13,23 +13,25 @@ public class PlaytimeHistoryController {
     private PlaytimeHistoryDAO playtimeHistoryDAO;
 
     @PostMapping(value="/insert")
-    public void insert(@RequestParam("emailAndMusicId") String emailAndMusicId, @RequestBody JSONObject tagInfo) {
-        playtimeHistoryDAO.insert(emailAndMusicId, tagInfo.toJSONString());
+    public void insert(@RequestParam("email") String email, @RequestParam("musicId") int musicId, @RequestBody JSONObject tagInfo) {
+        playtimeHistoryDAO.insert(email, musicId, tagInfo.toJSONString());
     }
 
     @PostMapping(value="/delete")
-    public void delete(@RequestParam("emailAndMusicId") String emailAndMusicId) {
-        playtimeHistoryDAO.delete(emailAndMusicId);
+    public void delete(@RequestParam("email") String email, @RequestParam("musicId") int musicId) {
+        playtimeHistoryDAO.delete(email, musicId);
     }
 
     @PostMapping(value="/update")
-    public void update(@RequestParam("emailAndMusicId") String emailAndMusicId, @RequestBody JSONObject tagInfo) {
-        playtimeHistoryDAO.update(emailAndMusicId, tagInfo.toJSONString());
+    public void update(@RequestParam("email") String email, @RequestParam("musicId") int musicId, @RequestBody JSONObject tagInfo) {
+        playtimeHistoryDAO.update(email, musicId, tagInfo.toJSONString());
     }
 
     @PostMapping(value="/select")
-    public @ResponseBody String select(@RequestParam("emailAndMusicId") String emailAndMusicId) {
-        return playtimeHistoryDAO.select(emailAndMusicId);
+    public @ResponseBody String select(@RequestParam("email") String email, @RequestParam("musicId") int musicId) {
+        String ret = playtimeHistoryDAO.select(email, musicId);
+        if (ret == null) ret = "";
+        return ret;
     }
 
     @PostMapping(value="/selectAll")

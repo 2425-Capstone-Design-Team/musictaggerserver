@@ -3,20 +3,30 @@ package com.tftf.musictaggerserver;
 import java.util.HashMap;
 
 public class PlaytimeHistoryDTO {
-    String emailAndMusicId;
+    String email;
+    int musicId;
     String tagInfo;
 
-    public PlaytimeHistoryDTO(String emailAndMusicId, String tagInfo) {
-        this.emailAndMusicId = emailAndMusicId;
+    public PlaytimeHistoryDTO(String email, int musicId, String tagInfo) {
+        this.email = email;
+        this.musicId = musicId;
         this.tagInfo = tagInfo;
     }
 
-    public String getEmailAndMusicId() {
-        return emailAndMusicId;
+    public String getEmail() {
+        return email;
     }
 
-    public void setEmailAndMusicId(String emailAndMusicId) {
-        this.emailAndMusicId = emailAndMusicId;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public int getMusicId() {
+        return musicId;
+    }
+
+    public void setMusicId(int musicId) {
+        this.musicId = musicId;
     }
 
     public String getTagInfo() {

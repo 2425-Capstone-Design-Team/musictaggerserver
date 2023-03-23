@@ -21,32 +21,32 @@ public class PlaytimeHistoryDAO {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public void insert(String emailAndMusicId, String tagInfo) {
-        String insertMemberSQL = "Insert Into playtimeHistoryTable Values(?, ?)";
-        jdbcTemplate.update(insertMemberSQL, emailAndMusicId, tagInfo);
+    public void insert(String email, int musicId, String tagInfo) {
+        String insertMemberSQL = "Insert Into playtimeHistoryTable Values(?, ?, ?)";
+        jdbcTemplate.update(insertMemberSQL, email, musicId, tagInfo);
     }
 
-    public void update(String emailAndMusicId, String tagInfo) {
-        String updateMemberSQL = "Update playtimeHistoryTable Set tagInfo = ? Where emailAndMusicId = ?";
-        jdbcTemplate.update(updateMemberSQL, tagInfo, emailAndMusicId);
+    public void update(String email, int musicId, String tagInfo) {
+        String updateMemberSQL = "Update playtimeHistoryTable Set tagInfo = ? Where (email, musicId) = (?, ?)";
+        jdbcTemplate.update(updateMemberSQL, tagInfo, email, musicId);
     }
 
-    public void delete(String emailAndMusicId) {
-        String deleteMemberSQL = "Delete From playtimeHistoryTable Where emailAndMusicId = ?";
-        jdbcTemplate.update(deleteMemberSQL, emailAndMusicId);
+    public void delete(String email, int musicId) {
+        String deleteMemberSQL = "Delete From playtimeHistoryTable Where (email, musicId) = (?, ?)";
+        jdbcTemplate.update(deleteMemberSQL, email, musicId);
     }
 
     class PlaytimeHistoryMapper implements RowMapper<PlaytimeHistoryDTO> {
         @Override
         public PlaytimeHistoryDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new PlaytimeHistoryDTO(rs.getString("emailAndMusicId"), rs.getString("tagInfo"));
+            return new PlaytimeHistoryDTO(rs.getString("email"), rs.getInt("musicId"), rs.getString("tagInfo"));
         }
     }
-    public String select(String emailAndMusicId) {
-        String selectPlaytimeHistorySQL = "Select * From playtimeHistoryTable Where emailAndMusicId = ?";
+    public String select(String email, int musicId) {
+        String selectPlaytimeHistorySQL = "Select * From playtimeHistoryTable Where (email, musicId) = (?, ?)";
 
         try {
-            return jdbcTemplate.queryForObject(selectPlaytimeHistorySQL, new PlaytimeHistoryMapper(), emailAndMusicId).tagInfo;
+            return jdbcTemplate.queryForObject(selectPlaytimeHistorySQL, new PlaytimeHistoryMapper(), email, musicId).tagInfo;
         } catch(IncorrectResultSizeDataAccessException e) {
             return null;
         }
