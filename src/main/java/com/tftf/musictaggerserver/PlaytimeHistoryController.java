@@ -1,5 +1,6 @@
 package com.tftf.musictaggerserver;
 
+import com.google.gson.JsonObject;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -27,12 +28,16 @@ public class PlaytimeHistoryController {
         playtimeHistoryDAO.update(email, musicId, tagInfo.toJSONString());
     }
 
-    @PostMapping(value="/select")
-    public @ResponseBody String select(@RequestParam("email") String email, @RequestParam("musicId") int musicId) {
-        String ret = playtimeHistoryDAO.select(email, musicId);
-        if (ret == null) ret = "";
-        return ret;
+    @PostMapping(value="/select", params={"email","musicId"})
+    public @ResponseBody JsonObject select(@RequestParam("email") String email, @RequestParam("musicId") int musicId) {
+        return playtimeHistoryDAO.select(email, musicId);
     }
+
+    @PostMapping(value="/select", params={"email"})
+    public @ResponseBody JsonObject select(@RequestParam("email") String email) {
+        return playtimeHistoryDAO.select(email);
+    }
+
 
     @PostMapping(value="/selectAll")
     public @ResponseBody List<PlaytimeHistoryDTO> selectAll() {

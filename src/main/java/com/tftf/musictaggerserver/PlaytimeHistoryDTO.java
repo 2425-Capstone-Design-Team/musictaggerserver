@@ -1,13 +1,16 @@
 package com.tftf.musictaggerserver;
 
+import com.google.gson.JsonObject;
+import org.json.simple.JSONObject;
+
 import java.util.HashMap;
 
 public class PlaytimeHistoryDTO {
     String email;
     int musicId;
-    String tagInfo;
+    JsonObject tagInfo;
 
-    public PlaytimeHistoryDTO(String email, int musicId, String tagInfo) {
+    public PlaytimeHistoryDTO(String email, int musicId, JsonObject tagInfo) {
         this.email = email;
         this.musicId = musicId;
         this.tagInfo = tagInfo;
@@ -29,11 +32,11 @@ public class PlaytimeHistoryDTO {
         this.musicId = musicId;
     }
 
-    public String getTagInfo() {
+    public JsonObject getTagInfo() {
         return tagInfo;
     }
 
-    public void setTagInfo(String tagInfo) {
+    public void setTagInfo(JsonObject tagInfo) {
         this.tagInfo = tagInfo;
     }
 }

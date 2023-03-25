@@ -1,5 +1,7 @@
 package com.tftf.musictaggerserver;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -39,14 +41,28 @@ public class PlaytimeHistoryDAO {
     class PlaytimeHistoryMapper implements RowMapper<PlaytimeHistoryDTO> {
         @Override
         public PlaytimeHistoryDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new PlaytimeHistoryDTO(rs.getString("email"), rs.getInt("musicId"), rs.getString("tagInfo"));
+            return new PlaytimeHistoryDTO(rs.getString("email"), rs.getInt("musicId"), (JsonObject) JsonParser.parseString(rs.getString("tagInfo")));
         }
     }
-    public String select(String email, int musicId) {
+    public JsonObject select(String email, int musicId) {
         String selectPlaytimeHistorySQL = "Select * From playtimeHistoryTable Where (email, musicId) = (?, ?)";
 
         try {
             return jdbcTemplate.queryForObject(selectPlaytimeHistorySQL, new PlaytimeHistoryMapper(), email, musicId).tagInfo;
+        } catch(IncorrectResultSizeDataAccessException e) {
+            return null;
+        }
+    }
+    public JsonObject select(String email) {
+        String selectPlaytimeHistorySQL = "Select * From playtimeHistoryTable Where email = ?";
+
+        try {
+            List<PlaytimeHistoryDTO> historyList = jdbcTemplate.query(selectPlaytimeHistorySQL, new PlaytimeHistoryMapper(), email);
+            JsonObject jo = new JsonObject();
+            for(PlaytimeHistoryDTO history : historyList) {
+                jo.add(String.valueOf(history.musicId), history.tagInfo);
+            }
+            return jo;
         } catch(IncorrectResultSizeDataAccessException e) {
             return null;
         }
