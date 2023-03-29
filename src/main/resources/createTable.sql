@@ -9,4 +9,9 @@ Create Table If Not Exists playtimeHistoryTable(
     musicId INT,
     tagInfo JSON,
     PRIMARY KEY (email, musicId)
-)
+);
+
+Create Table If Not Exists playlistTable(
+    email Varchar(50) Primary Key,
+    musicIdList JSON
+);

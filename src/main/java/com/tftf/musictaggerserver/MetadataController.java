@@ -1,10 +1,8 @@
 package com.tftf.musictaggerserver;
 
-import com.mysql.cj.xdevapi.JsonArray;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.FileReader;
@@ -20,50 +18,69 @@ public class MetadataController {
     @GetMapping("metadata")
     public @ResponseBody Music getMetadataById(@RequestParam("id") int id){
 
-        JSONParser parser = new JSONParser();
-
         try {
             FileReader reader = new FileReader(metaPath);
-            JSONArray jsonArray = (JSONArray) parser.parse(reader);
+            JsonArray jsonArray = (JsonArray) JsonParser.parseReader(reader);
             reader.close();
 
-            JSONObject obj = (JSONObject) jsonArray.get(id - 1000);
+            JsonObject obj = (JsonObject) jsonArray.get(id - 1000);
 
-            return new Music(((Long) obj.get("id")).intValue(), obj.get("title").toString(), obj.get("album").toString(), obj.get("artist").toString(),
-                    (Long) obj.get("duration"), obj.get("path").toString(), obj.get("artUri").toString());
+            return new Music(obj.get("id").getAsInt(), obj.get("title").getAsString(), obj.get("album").getAsString(), obj.get("artist").getAsString(),
+                    obj.get("duration").getAsLong(), obj.get("path").getAsString(), obj.get("artUri").getAsString());
 
-        } catch (IOException | ParseException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
         return null;
     }
 
-    @GetMapping("metadatalist")
-    public @ResponseBody List<Music> getMetadataList(@RequestParam("items") List<String> items, @RequestParam("name") String name){
-
-        JSONParser parser = new JSONParser();
-
+    @GetMapping(value="metadatalist", params={"ids"})
+    public @ResponseBody List<Music> getMetadataList(@RequestParam("ids") List<Integer> ids) {
         try {
             FileReader reader = new FileReader(metaPath);
-            JSONArray jsonArray = (JSONArray) parser.parse(reader);
+            JsonArray jsonArray = JsonParser.parseReader(reader).getAsJsonArray();
+            reader.close();
+
+            List<Music> ls = new ArrayList<>();
+
+            for (int id : ids) {
+                JsonObject obj = jsonArray.get(id - 1000).getAsJsonObject();
+                ls.add(new Music(obj.get("id").getAsInt(), obj.get("title").getAsString(), obj.get("album").getAsString(), obj.get("artist").getAsString(),
+                        obj.get("duration").getAsLong(), obj.get("path").getAsString(), obj.get("artUri").getAsString()));
+            }
+
+            return ls;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @GetMapping(value="metadatalist", params = {"items", "name"})
+    public @ResponseBody List<Music> getMetadataList(@RequestParam("items") List<String> items, @RequestParam("name") String name) {
+        try {
+            FileReader reader = new FileReader(metaPath);
+            JsonArray jsonArray = JsonParser.parseReader(reader).getAsJsonArray();
             reader.close();
 
             List<Music> ls = new ArrayList<>();
 
             for (String s : items) {
                 for (Object o : jsonArray) {
-                    JSONObject obj = (JSONObject) o;
-                    if (obj.get(s).equals(name)) {
-                        ls.add(new Music(((Long) obj.get("id")).intValue(), obj.get("title").toString(), obj.get("album").toString(), obj.get("artist").toString(),
-                                (Long) obj.get("duration"), obj.get("path").toString(), obj.get("artUri").toString()));
+                    JsonObject obj = (JsonObject) o;
+                    if (obj.get(s).getAsString().equals(name)) {
+                        ls.add(new Music(obj.get("id").getAsInt(), obj.get("title").getAsString(), obj.get("album").getAsString(), obj.get("artist").getAsString(),
+                                obj.get("duration").getAsLong(), obj.get("path").getAsString(), obj.get("artUri").getAsString()));
                     }
                 }
             }
 
             return ls;
 
-        } catch (IOException | ParseException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 

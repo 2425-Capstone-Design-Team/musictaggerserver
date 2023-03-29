@@ -23,14 +23,14 @@ public class PlaytimeHistoryDAO {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public void insert(String email, int musicId, String tagInfo) {
+    public void insert(String email, int musicId, JsonObject tagInfo) {
         String insertMemberSQL = "Insert Into playtimeHistoryTable Values(?, ?, ?)";
-        jdbcTemplate.update(insertMemberSQL, email, musicId, tagInfo);
+        jdbcTemplate.update(insertMemberSQL, email, musicId, tagInfo.toString());
     }
 
-    public void update(String email, int musicId, String tagInfo) {
+    public void update(String email, int musicId, JsonObject tagInfo) {
         String updateMemberSQL = "Update playtimeHistoryTable Set tagInfo = ? Where (email, musicId) = (?, ?)";
-        jdbcTemplate.update(updateMemberSQL, tagInfo, email, musicId);
+        jdbcTemplate.update(updateMemberSQL, tagInfo.toString(), email, musicId);
     }
 
     public void delete(String email, int musicId) {
