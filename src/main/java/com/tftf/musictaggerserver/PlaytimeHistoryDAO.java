@@ -2,7 +2,6 @@ package com.tftf.musictaggerserver;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 
 @Repository
@@ -53,16 +53,16 @@ public class PlaytimeHistoryDAO {
             return null;
         }
     }
-    public JsonObject select(String email) {
+    public HashMap<Integer, JsonObject> select(String email) {
         String selectPlaytimeHistorySQL = "Select * From playtimeHistoryTable Where email = ?";
 
         try {
             List<PlaytimeHistoryDTO> historyList = jdbcTemplate.query(selectPlaytimeHistorySQL, new PlaytimeHistoryMapper(), email);
-            JsonObject jo = new JsonObject();
-            for(PlaytimeHistoryDTO history : historyList) {
-                jo.add(String.valueOf(history.musicId), history.tagInfo);
+            HashMap<Integer, JsonObject> joMap = new HashMap<>();
+            for(PlaytimeHistoryDTO dto : historyList) {
+                joMap.put(dto.musicId, dto.tagInfo);
             }
-            return jo;
+            return joMap;
         } catch(IncorrectResultSizeDataAccessException e) {
             return null;
         }

@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -11,6 +12,8 @@ import java.util.List;
 public class PlaytimeHistoryController {
     @Autowired
     private PlaytimeHistoryDAO playtimeHistoryDAO;
+    @Autowired
+    private MusicPlayHistoryDAO musicPlayHistoryDAO;
 
     @PostMapping(value="/insert")
     public void insert(@RequestParam("email") String email, @RequestParam("musicId") int musicId, @RequestBody JsonObject tagInfo) {
@@ -33,7 +36,7 @@ public class PlaytimeHistoryController {
     }
 
     @PostMapping(value="/select", params={"email"})
-    public @ResponseBody JsonObject select(@RequestParam("email") String email) {
+    public @ResponseBody HashMap<Integer, JsonObject> select(@RequestParam("email") String email) {
         return playtimeHistoryDAO.select(email);
     }
 

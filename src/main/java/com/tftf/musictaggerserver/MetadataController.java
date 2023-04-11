@@ -35,7 +35,7 @@ public class MetadataController {
         return null;
     }
 
-    @GetMapping(value="metadatalist", params={"ids"})
+    @GetMapping(value="metadatalist", params="ids")
     public @ResponseBody List<Music> getMetadataList(@RequestParam("ids") List<Integer> ids) {
         try {
             FileReader reader = new FileReader(metaPath);

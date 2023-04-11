@@ -30,20 +30,6 @@ public class PlaylistManagerDAO {
     public void insert(PlaylistManagerDTO playlistDTO) {
         String insertSQL = "Insert Into playlistTable Values(?, ?)";
         jdbcTemplate.update(insertSQL, playlistDTO.email, playlistDTO.musicIdList.toString());
-        /*
-        jdbcTemplate.update(new PreparedStatementCreator() {
-            @Override
-            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                PreparedStatement pstmt = con.prepareStatement(
-                        "Insert Into playlistTable Values(?, ?)"
-                );
-                pstmt.setString(1, playlistDTO.email);
-                pstmt.setObject(2, playlistDTO.musicIdList);
-
-                return pstmt;
-            }
-        });
-        */
     }
 
     public void update(PlaylistManagerDTO playlistDTO) {
