@@ -1,5 +1,7 @@
 package com.tftf.musictaggerserver;
 
+import com.google.gson.JsonObject;
+import com.tftf.musictaggerserver.dto.PlaylistManagerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,19 +13,21 @@ public class PlaylistManagerController {
     @Autowired
     private PlaylistManagerDAO playlistManagerDAO;
 
-    @PostMapping(value="/insert")
-    public void insert(@RequestBody PlaylistManagerDTO playlistManagerDTO) {
-        playlistManagerDAO.insert(playlistManagerDTO);
+    @PostMapping(value="/save")
+    public void save(@RequestBody PlaylistManagerDTO dto) {
+        PlaylistManagerDTO loadedDto = playlistManagerDAO.select(dto.getEmail());
+
+        if (loadedDto == null) {
+            playlistManagerDAO.insert(dto);
+        }
+        else {
+            playlistManagerDAO.update(dto);
+        }
     }
 
     @PostMapping(value="/delete")
     public void delete(@RequestParam("email") String email) {
         playlistManagerDAO.delete(email);
-    }
-
-    @PostMapping(value="/update")
-    public void update(@RequestBody PlaylistManagerDTO playlistManagerDTO) {
-        playlistManagerDAO.update(playlistManagerDTO);
     }
 
     @PostMapping(value="/select", params={"email"})

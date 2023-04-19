@@ -40,7 +40,6 @@ public class RecommendationController {
         }
 
         // HashMap<태그카테고리, (내림차순)PriorityQueue<Pair<점수, 주변정보>>>
-        // todo : Pair 타입 에러 해결 필요
         HashMap<CharSequence, PriorityQueue<Pair<CharSequence, Integer>>> tagRank = new HashMap<>() {{
             for (CharSequence category : historySum.keySet()) {
                 PriorityQueue<Pair<CharSequence, Integer>> categoryRank = new PriorityQueue<>(historySum.get(category).size(), Comparator.comparingInt(Pair::getSecond));

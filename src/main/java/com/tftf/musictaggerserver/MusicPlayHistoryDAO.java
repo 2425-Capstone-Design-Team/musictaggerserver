@@ -2,6 +2,7 @@ package com.tftf.musictaggerserver;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
+import com.tftf.musictaggerserver.dto.MusicPlayHistoryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,12 +25,12 @@ public class MusicPlayHistoryDAO {
 
     public void insert(MusicPlayHistoryDTO dto) {
         String insertSQL = "Insert Into musicTagInfoTable Values(?, ?)";
-        jdbcTemplate.update(insertSQL, dto.musicId, dto.jsonArray.toString());
+        jdbcTemplate.update(insertSQL, dto.getMusicId(), dto.getJsonArray().toString());
     }
 
     public void update(MusicPlayHistoryDTO dto) {
         String updateSQL = "Update musicTagInfoTable Set tagInfo = ? Where musicId = ?";
-        jdbcTemplate.update(updateSQL, dto.jsonArray.toString(), dto.musicId);
+        jdbcTemplate.update(updateSQL, dto.getJsonArray().toString(), dto.getMusicId());
     }
 
     public void delete(int musicId) {

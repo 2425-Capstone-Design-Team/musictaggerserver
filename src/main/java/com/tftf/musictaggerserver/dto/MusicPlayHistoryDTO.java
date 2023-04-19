@@ -1,4 +1,4 @@
-package com.tftf.musictaggerserver;
+package com.tftf.musictaggerserver.dto;
 
 import com.google.gson.JsonArray;
 
