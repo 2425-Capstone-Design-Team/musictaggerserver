@@ -1,7 +1,7 @@
 package com.tftf.musictaggerserver;
 
 import com.google.gson.JsonObject;
-import com.tftf.musictaggerserver.dto.PlaytimeHistoryDTO;
+import com.tftf.util.PlaytimeHistoryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

@@ -2,7 +2,6 @@ package com.tftf.musictaggerserver;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
-import com.tftf.musictaggerserver.dto.MusicPlayHistoryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,6 +12,8 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+
+import com.tftf.util.MusicPlayHistoryDTO;
 
 @Repository
 public class MusicPlayHistoryDAO {

@@ -1,9 +1,9 @@
 package com.tftf.musictaggerserver;
 
-import com.google.gson.JsonObject;
-import com.tftf.musictaggerserver.dto.PlaylistManagerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import com.tftf.util.PlaylistManagerDTO;
 
 import java.util.List;
 

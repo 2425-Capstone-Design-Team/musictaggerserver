@@ -14,7 +14,7 @@
 	<name>musictaggerserver</name>
 	<description>server for music tagger</description>
 	<properties>
-		<java.version>19</java.version>
+		<java.version>17</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -100,6 +100,12 @@
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-commons</artifactId>
 			<version>3.0.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.tftf</groupId>
+			<artifactId>util</artifactId>
+			<version>1.0</version>
 		</dependency>
 
 	</dependencies>
