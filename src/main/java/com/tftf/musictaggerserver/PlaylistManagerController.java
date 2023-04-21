@@ -35,7 +35,6 @@ public class PlaylistManagerController {
         return playlistManagerDAO.select(email);
     }
 
-
     @PostMapping(value="/selectAll")
     public @ResponseBody List<PlaylistManagerDTO> selectAll() {
         return playlistManagerDAO.selectAll();

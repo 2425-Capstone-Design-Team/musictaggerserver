@@ -3,6 +3,7 @@ package com.tftf.musictaggerserver;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.tftf.util.PlaytimeHistoryDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,14 +67,15 @@ public class RecommendationController {
 //    public @ResponseBody List<Integer> getPersonalizedList(@RequestParam("email") String email, @RequestBody JsonObject surroundings) {
     public @ResponseBody List<Integer> getPersonalizedList(@RequestParam("email") String email) {
 
+        List<PlaytimeHistoryDTO> history = playtimeHistoryDAO.select(email);
 
-        HashMap<Integer, JsonObject> history = playtimeHistoryDAO.select(email);
-
+        /*
         for (int musicId : history.keySet()) {
             HashMap<CharSequence, CharSequence> musicTag = getMusicTag(history.get(musicId));
 
             log.info("musicTag : {}", musicTag);
         }
+        */
         
         // todo : getMusicTag 테스트 필요
 

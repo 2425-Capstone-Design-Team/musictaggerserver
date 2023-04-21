@@ -13,18 +13,16 @@ import java.util.List;
 public class PlaytimeHistoryController {
     @Autowired
     private PlaytimeHistoryDAO playtimeHistoryDAO;
-    @Autowired
-    private MusicPlayHistoryDAO musicPlayHistoryDAO;
 
     @PostMapping(value="/save")
-    public void insert(@RequestParam("email") String email, @RequestParam("musicId") int musicId, @RequestBody JsonObject tagInfo) {
-        JsonObject jo = playtimeHistoryDAO.select(email, musicId);
+    public void insert(@RequestBody PlaytimeHistoryDTO dto) {
+        PlaytimeHistoryDTO loadedDto = playtimeHistoryDAO.select(dto.getEmail(), dto.getMusicId());
 
-        if (jo == null) {
-            playtimeHistoryDAO.insert(email, musicId, tagInfo);
+        if (loadedDto == null) {
+            playtimeHistoryDAO.insert(dto);
         }
         else {
-            playtimeHistoryDAO.update(email, musicId, tagInfo);
+            playtimeHistoryDAO.update(dto);
         }
     }
 
@@ -34,15 +32,14 @@ public class PlaytimeHistoryController {
     }
 
     @PostMapping(value="/select", params={"email","musicId"})
-    public @ResponseBody JsonObject select(@RequestParam("email") String email, @RequestParam("musicId") int musicId) {
+    public @ResponseBody PlaytimeHistoryDTO select(@RequestParam("email") String email, @RequestParam("musicId") int musicId) {
         return playtimeHistoryDAO.select(email, musicId);
     }
 
     @PostMapping(value="/select", params={"email"})
-    public @ResponseBody HashMap<Integer, JsonObject> select(@RequestParam("email") String email) {
+    public @ResponseBody List<PlaytimeHistoryDTO> select(@RequestParam("email") String email) {
         return playtimeHistoryDAO.select(email);
     }
-
 
     @PostMapping(value="/selectAll")
     public @ResponseBody List<PlaytimeHistoryDTO> selectAll() {

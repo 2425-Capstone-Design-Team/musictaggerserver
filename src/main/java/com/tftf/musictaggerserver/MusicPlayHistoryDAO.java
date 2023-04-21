@@ -1,5 +1,6 @@
 package com.tftf.musictaggerserver;
 
+/*
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,3 +62,4 @@ public class MusicPlayHistoryDAO {
         return jdbcTemplate.query(selectAllSQL, new MusicPlayHistoryMapper());
     }
 }
+*/

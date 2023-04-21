@@ -3,6 +3,7 @@ package com.tftf.musictaggerserver;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.tftf.util.Music;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.FileReader;
