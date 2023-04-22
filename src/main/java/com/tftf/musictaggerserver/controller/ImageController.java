@@ -1,4 +1,4 @@
-package com.tftf.musictaggerserver;
+package com.tftf.musictaggerserver.controller;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;

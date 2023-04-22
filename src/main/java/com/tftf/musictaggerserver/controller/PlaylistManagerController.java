@@ -1,5 +1,6 @@
-package com.tftf.musictaggerserver;
+package com.tftf.musictaggerserver.controller;
 
+import com.tftf.musictaggerserver.db.PlaylistManagerDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,11 +1,10 @@
-package com.tftf.musictaggerserver;
+package com.tftf.musictaggerserver.controller;
 
-import com.google.gson.JsonObject;
+import com.tftf.musictaggerserver.db.PlaytimeHistoryDAO;
 import com.tftf.util.PlaytimeHistoryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 
 @RestController
