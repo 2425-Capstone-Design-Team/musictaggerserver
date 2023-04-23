@@ -2,13 +2,18 @@ package com.tftf.musictaggerserver.controller;
 
 import com.google.gson.JsonObject;
 import com.tftf.musictaggerserver.db.PlaytimeHistoryDAO;
+import com.tftf.util.MusicTag;
+import com.tftf.util.PlayHistory;
 import com.tftf.util.PlaytimeHistoryDTO;
+import com.tftf.util.Surroundings;
+import com.tftf.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.data.util.Pair;
 import java.util.*;
+
+import static java.lang.CharSequence.compare;
 
 @RestController
 @RequestMapping(value="recommend")
@@ -17,76 +22,45 @@ public class RecommendationController {
     private final Logger log = LoggerFactory.getLogger(getClass());
     @Autowired
     PlaytimeHistoryDAO playtimeHistoryDAO;
-
-    public HashMap<CharSequence, CharSequence> getMusicTag(JsonObject musicHistoryJO) {
-
-        HashMap<CharSequence, HashMap<CharSequence, Integer>> historySum = new HashMap<>();
-
-        for (String category : musicHistoryJO.keySet()) {
-            if (!historySum.containsKey(category)) {
-                historySum.put(category, new HashMap<>());
-            }
-
-            JsonObject tagJO = musicHistoryJO.get(category).getAsJsonObject();
-            for (String tagKey : tagJO.keySet()) {
-                if (!historySum.get(category).containsKey(tagKey)) {
-                    historySum.get(category).put(tagKey, 0);
-                }
-
-                int tagVal = tagJO.get(tagKey).getAsInt();
-                historySum.get(category).replace(tagKey, historySum.get(category).get(tagKey) + tagVal);
-            }
-        }
-
-        // HashMap<태그카테고리, (내림차순)PriorityQueue<Pair<점수, 주변정보>>>
-        HashMap<CharSequence, PriorityQueue<Pair<CharSequence, Integer>>> tagRank = new HashMap<>() {{
-            for (CharSequence category : historySum.keySet()) {
-                PriorityQueue<Pair<CharSequence, Integer>> categoryRank = new PriorityQueue<>(historySum.get(category).size(), Comparator.comparingInt(Pair::getSecond));
-                for (CharSequence tagKey : historySum.get(category).keySet()) {
-                    int tagVal = historySum.get(category).get(tagKey);
-                    categoryRank.add(Pair.of(tagKey, tagVal));
-                }
-                put(category, categoryRank);
-            }
-        }};
-
-        HashMap<CharSequence, CharSequence> musicTag = new HashMap<>();
-
-        for (CharSequence category : tagRank.keySet()) {
-            if (!tagRank.get(category).isEmpty()) {
-                musicTag.put(category, tagRank.get(category).peek().getFirst());
-            }
-        }
-
-        return musicTag;
-    }
     
     // todo : 태그정보 받아와서 추천리스트 만들고 반환해주기
-    @GetMapping("personalized")
-//    public @ResponseBody List<Integer> getPersonalizedList(@RequestParam("email") String email, @RequestBody JsonObject surroundings) {
-    public @ResponseBody List<Integer> getPersonalizedList(@RequestParam("email") String email) {
+    @PostMapping("personalized")
+    public @ResponseBody List<Integer> getPersonalizedList(@RequestParam("email") String email,
+                                                           @RequestBody Surroundings surroundings,
+                                                           @RequestParam int listSize) {
 
-        List<PlaytimeHistoryDTO> history = playtimeHistoryDAO.select(email);
+        List<PlaytimeHistoryDTO> histories = playtimeHistoryDAO.select(email);
 
-        /*
-        for (int musicId : history.keySet()) {
-            HashMap<CharSequence, CharSequence> musicTag = getMusicTag(history.get(musicId));
+        // PriorityQueue<Pair<MusicID, Point>>, 내림차순
+        PriorityQueue<Pair<Integer, Integer>> PQ = new PriorityQueue<>(10,
+                (p1, p2) -> p2.getSecond() - p1.getSecond());
 
-            log.info("musicTag : {}", musicTag);
+        for (PlaytimeHistoryDTO historyDto : histories) {
+            PlayHistory history = new PlayHistory();
+            history.importFromJson(historyDto.getHistoryJO());
+            MusicTag historyMusicTag = history.getMusicTag();
+
+            int point = 0;
+            for (CharSequence category : surroundings.infoMap.keySet()) {
+                CharSequence surroundingsInfo = surroundings.infoMap.get(category);
+                CharSequence historyMusicTagInfo = historyMusicTag.tagMap.get(category);
+
+                if (compare(historyMusicTagInfo, surroundingsInfo) == 0) {
+                    point++;
+                }
+            }
+
+            PQ.add(new Pair<>(historyDto.getMusicId(), point));
         }
-        */
-        
-        // todo : getMusicTag 테스트 필요
 
-        // todo : 현재 주변 환경을 나타내는 클래스 필요?, 매개변수로 클라이언트의 주변환경 정보를 받아와야함
+        ArrayList<Integer> personalizedList = new ArrayList<>();
 
-        /*
-        String currentWeather = surroundings.get("날씨").getAsString();
-        String currentTime = surroundings.get("시간").getAsString();
-        String currentSeason = surroundings.get("계절").getAsString();
-        */
+        for (Pair<Integer, Integer> p : PQ) {
+            if (listSize-- == 0) break;
+            personalizedList.add(p.getFirst());
+        }
 
-        return new ArrayList<>();
+        return personalizedList;
     }
 
     /*
