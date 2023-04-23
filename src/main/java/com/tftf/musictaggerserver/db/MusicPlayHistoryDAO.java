@@ -1,5 +1,6 @@
-package com.tftf.musictaggerserver;
+package com.tftf.musictaggerserver.db;
 
+/*
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import com.tftf.util.MusicPlayHistoryDTO;
+
 @Repository
 public class MusicPlayHistoryDAO {
     @Autowired
@@ -24,12 +27,12 @@ public class MusicPlayHistoryDAO {
 
     public void insert(MusicPlayHistoryDTO dto) {
         String insertSQL = "Insert Into musicTagInfoTable Values(?, ?)";
-        jdbcTemplate.update(insertSQL, dto.musicId, dto.jsonArray.toString());
+        jdbcTemplate.update(insertSQL, dto.getMusicId(), dto.getJsonArray().toString());
     }
 
     public void update(MusicPlayHistoryDTO dto) {
         String updateSQL = "Update musicTagInfoTable Set tagInfo = ? Where musicId = ?";
-        jdbcTemplate.update(updateSQL, dto.jsonArray.toString(), dto.musicId);
+        jdbcTemplate.update(updateSQL, dto.getJsonArray().toString(), dto.getMusicId());
     }
 
     public void delete(int musicId) {
@@ -59,3 +62,4 @@ public class MusicPlayHistoryDAO {
         return jdbcTemplate.query(selectAllSQL, new MusicPlayHistoryMapper());
     }
 }
+*/

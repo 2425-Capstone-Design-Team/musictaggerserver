@@ -1,10 +1,10 @@
-package com.tftf.musictaggerserver;
+package com.tftf.musictaggerserver.controller;
 
-import com.google.gson.JsonObject;
+import com.tftf.musictaggerserver.db.PlaytimeHistoryDAO;
+import com.tftf.util.PlaytimeHistoryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -12,12 +12,17 @@ import java.util.List;
 public class PlaytimeHistoryController {
     @Autowired
     private PlaytimeHistoryDAO playtimeHistoryDAO;
-    @Autowired
-    private MusicPlayHistoryDAO musicPlayHistoryDAO;
 
-    @PostMapping(value="/insert")
-    public void insert(@RequestParam("email") String email, @RequestParam("musicId") int musicId, @RequestBody JsonObject tagInfo) {
-        playtimeHistoryDAO.insert(email, musicId, tagInfo);
+    @PostMapping(value="/save")
+    public void insert(@RequestBody PlaytimeHistoryDTO dto) {
+        PlaytimeHistoryDTO loadedDto = playtimeHistoryDAO.select(dto.getEmail(), dto.getMusicId());
+
+        if (loadedDto == null) {
+            playtimeHistoryDAO.insert(dto);
+        }
+        else {
+            playtimeHistoryDAO.update(dto);
+        }
     }
 
     @PostMapping(value="/delete")
@@ -25,21 +30,15 @@ public class PlaytimeHistoryController {
         playtimeHistoryDAO.delete(email, musicId);
     }
 
-    @PostMapping(value="/update")
-    public void update(@RequestParam("email") String email, @RequestParam("musicId") int musicId, @RequestBody JsonObject tagInfo) {
-        playtimeHistoryDAO.update(email, musicId, tagInfo);
-    }
-
     @PostMapping(value="/select", params={"email","musicId"})
-    public @ResponseBody JsonObject select(@RequestParam("email") String email, @RequestParam("musicId") int musicId) {
+    public @ResponseBody PlaytimeHistoryDTO select(@RequestParam("email") String email, @RequestParam("musicId") int musicId) {
         return playtimeHistoryDAO.select(email, musicId);
     }
 
     @PostMapping(value="/select", params={"email"})
-    public @ResponseBody HashMap<Integer, JsonObject> select(@RequestParam("email") String email) {
+    public @ResponseBody List<PlaytimeHistoryDTO> select(@RequestParam("email") String email) {
         return playtimeHistoryDAO.select(email);
     }
-
 
     @PostMapping(value="/selectAll")
     public @ResponseBody List<PlaytimeHistoryDTO> selectAll() {

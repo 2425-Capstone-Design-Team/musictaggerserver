@@ -1,7 +1,8 @@
-package com.tftf.musictaggerserver;
+package com.tftf.musictaggerserver.db;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.tftf.util.PlaytimeHistoryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,14 +24,14 @@ public class PlaytimeHistoryDAO {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public void insert(String email, int musicId, JsonObject tagInfo) {
+    public void insert(PlaytimeHistoryDTO dto) {
         String insertMemberSQL = "Insert Into playtimeHistoryTable Values(?, ?, ?)";
-        jdbcTemplate.update(insertMemberSQL, email, musicId, tagInfo.toString());
+        jdbcTemplate.update(insertMemberSQL, dto.getEmail(), dto.getMusicId(), dto.getHistoryJO().toString());
     }
 
-    public void update(String email, int musicId, JsonObject tagInfo) {
+    public void update(PlaytimeHistoryDTO dto) {
         String updateMemberSQL = "Update playtimeHistoryTable Set tagInfo = ? Where (email, musicId) = (?, ?)";
-        jdbcTemplate.update(updateMemberSQL, tagInfo.toString(), email, musicId);
+        jdbcTemplate.update(updateMemberSQL, dto.getHistoryJO().toString(), dto.getEmail(), dto.getMusicId());
     }
 
     public void delete(String email, int musicId) {
@@ -44,28 +45,24 @@ public class PlaytimeHistoryDAO {
             return new PlaytimeHistoryDTO(rs.getString("email"), rs.getInt("musicId"), (JsonObject) JsonParser.parseString(rs.getString("tagInfo")));
         }
     }
-    public JsonObject select(String email, int musicId) {
+    public PlaytimeHistoryDTO select(String email, int musicId) {
         String selectPlaytimeHistorySQL = "Select * From playtimeHistoryTable Where (email, musicId) = (?, ?)";
 
         try {
-            return jdbcTemplate.queryForObject(selectPlaytimeHistorySQL, new PlaytimeHistoryMapper(), email, musicId).tagInfo;
+            return jdbcTemplate.queryForObject(selectPlaytimeHistorySQL, new PlaytimeHistoryMapper(), email, musicId);
         } catch(IncorrectResultSizeDataAccessException e) {
             return null;
         }
     }
-    public HashMap<Integer, JsonObject> select(String email) {
+    public List<PlaytimeHistoryDTO> select(String email) {
         String selectPlaytimeHistorySQL = "Select * From playtimeHistoryTable Where email = ?";
 
         try {
-            List<PlaytimeHistoryDTO> historyList = jdbcTemplate.query(selectPlaytimeHistorySQL, new PlaytimeHistoryMapper(), email);
-            HashMap<Integer, JsonObject> joMap = new HashMap<>();
-            for(PlaytimeHistoryDTO dto : historyList) {
-                joMap.put(dto.musicId, dto.tagInfo);
-            }
-            return joMap;
+            return jdbcTemplate.query(selectPlaytimeHistorySQL, new PlaytimeHistoryMapper(), email);
         } catch(IncorrectResultSizeDataAccessException e) {
             return null;
         }
+
     }
 
     public List<PlaytimeHistoryDTO> selectAll() {

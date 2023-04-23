@@ -1,14 +1,13 @@
-package com.tftf.musictaggerserver;
+package com.tftf.musictaggerserver.controller;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.tftf.musictaggerserver.db.PlaytimeHistoryDAO;
+import com.tftf.util.PlaytimeHistoryDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.util.Pair;
-
 import java.util.*;
 
 @RestController
@@ -40,7 +39,6 @@ public class RecommendationController {
         }
 
         // HashMap<태그카테고리, (내림차순)PriorityQueue<Pair<점수, 주변정보>>>
-        // todo : Pair 타입 에러 해결 필요
         HashMap<CharSequence, PriorityQueue<Pair<CharSequence, Integer>>> tagRank = new HashMap<>() {{
             for (CharSequence category : historySum.keySet()) {
                 PriorityQueue<Pair<CharSequence, Integer>> categoryRank = new PriorityQueue<>(historySum.get(category).size(), Comparator.comparingInt(Pair::getSecond));
@@ -68,14 +66,15 @@ public class RecommendationController {
 //    public @ResponseBody List<Integer> getPersonalizedList(@RequestParam("email") String email, @RequestBody JsonObject surroundings) {
     public @ResponseBody List<Integer> getPersonalizedList(@RequestParam("email") String email) {
 
+        List<PlaytimeHistoryDTO> history = playtimeHistoryDAO.select(email);
 
-        HashMap<Integer, JsonObject> history = playtimeHistoryDAO.select(email);
-
+        /*
         for (int musicId : history.keySet()) {
             HashMap<CharSequence, CharSequence> musicTag = getMusicTag(history.get(musicId));
 
             log.info("musicTag : {}", musicTag);
         }
+        */
         
         // todo : getMusicTag 테스트 필요
 
