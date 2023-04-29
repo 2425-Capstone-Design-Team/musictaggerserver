@@ -1,8 +1,9 @@
-package com.tftf.musictaggerserver;
+package com.tftf.musictaggerserver.controller;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.tftf.util.Music;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.FileReader;
@@ -10,6 +11,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+
+// todo : 파일에서 메타데이터 불러와 json으로 저장하는 코드 위치 물어볼 것
 @RestController
 public class MetadataController {
     final String metaPath = "src\\main\\resources\\metadata\\metaf.json";
