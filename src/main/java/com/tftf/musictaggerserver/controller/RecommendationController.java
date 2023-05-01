@@ -2,11 +2,7 @@ package com.tftf.musictaggerserver.controller;
 
 import com.google.gson.JsonObject;
 import com.tftf.musictaggerserver.db.PlaytimeHistoryDAO;
-import com.tftf.util.MusicTag;
-import com.tftf.util.PlayHistory;
-import com.tftf.util.PlaytimeHistoryDTO;
-import com.tftf.util.Surroundings;
-import com.tftf.util.Pair;
+import com.tftf.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,13 +28,13 @@ public class RecommendationController {
         List<PlaytimeHistoryDTO> histories = playtimeHistoryDAO.select(email);
 
         // PriorityQueue<Pair<MusicID, Point>>, 내림차순
-        PriorityQueue<Pair<Integer, Integer>> PQ = new PriorityQueue<>(10,
+        PriorityQueue<Pair<Integer, Integer>> PQ = new PriorityQueue<>(listSize,
                 (p1, p2) -> p2.getSecond() - p1.getSecond());
 
         for (PlaytimeHistoryDTO historyDto : histories) {
             PlayHistory history = new PlayHistory();
             history.importFromJson(historyDto.getHistoryJO());
-            MusicTag historyMusicTag = history.getMusicTag();
+            MusicTag historyMusicTag = MusicTagger.getMusicTag(history);
 
             int point = 0;
             for (CharSequence category : surroundings.infoMap.keySet()) {
@@ -63,57 +59,39 @@ public class RecommendationController {
         return personalizedList;
     }
 
-    /*
-    @GetMapping(value="metadatalist", params="ids")
-    public @ResponseBody List<Music> getMetadataList(@RequestParam("ids") List<Integer> ids) {
-        try {
-            FileReader reader = new FileReader(metaPath);
-            JsonArray jsonArray = JsonParser.parseReader(reader).getAsJsonArray();
-            reader.close();
+    @PostMapping("theme")
+    public @ResponseBody List<Playlist> getThemeList(@RequestBody Surroundings surroundings,
+                                               @RequestParam int listSize) {
 
-            List<Music> ls = new ArrayList<>();
+        List<Playlist> ListOfPlaylist = new ArrayList<>();
+        List<PlaytimeHistoryDTO> historieDtoList = playtimeHistoryDAO.selectAll();
 
-            for (int id : ids) {
-                JsonObject obj = jsonArray.get(id - 1000).getAsJsonObject();
-                ls.add(new Music(obj.get("id").getAsInt(), obj.get("title").getAsString(), obj.get("album").getAsString(), obj.get("artist").getAsString(),
-                        obj.get("duration").getAsLong(), obj.get("path").getAsString(), obj.get("artUri").getAsString()));
+        for (CharSequence category : surroundings.infoMap.keySet()) {
+            CharSequence surroundingsInfo = surroundings.infoMap.get(category);
+
+            // PriorityQueue<Pair<MusicID, Point>>, 내림차순
+            PriorityQueue<Pair<Integer, Long>> PQ = new PriorityQueue<>(listSize,
+                    (p1, p2) -> Math.toIntExact(p2.getSecond() - p1.getSecond()));
+
+            for (PlaytimeHistoryDTO dto : historieDtoList) {
+                PlayHistory history = new PlayHistory();
+                history.importFromJson(dto.getHistoryJO());
+
+                Long point = history.getPlaytime(category, surroundingsInfo);
+
+                PQ.add(new Pair<>(dto.getMusicId(), point));
             }
 
-            return ls;
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    @GetMapping(value="metadatalist", params = {"items", "name"})
-    public @ResponseBody List<Music> getMetadataList(@RequestParam("items") List<String> items, @RequestParam("name") String name) {
-        try {
-            FileReader reader = new FileReader(metaPath);
-            JsonArray jsonArray = JsonParser.parseReader(reader).getAsJsonArray();
-            reader.close();
-
-            List<Music> ls = new ArrayList<>();
-
-            for (String s : items) {
-                for (Object o : jsonArray) {
-                    JsonObject obj = (JsonObject) o;
-                    if (obj.get(s).getAsString().equals(name)) {
-                        ls.add(new Music(obj.get("id").getAsInt(), obj.get("title").getAsString(), obj.get("album").getAsString(), obj.get("artist").getAsString(),
-                                obj.get("duration").getAsLong(), obj.get("path").getAsString(), obj.get("artUri").getAsString()));
-                    }
-                }
+            Playlist playlist = new Playlist(surroundingsInfo.toString(), new ArrayList<>());
+            int sz = listSize;
+            for (Pair<Integer, Long> p : PQ) {
+                if (sz-- == 0) break;
+                playlist.getMusicList().add(p.getFirst());
             }
-
-            return ls;
-
-        } catch (IOException e) {
-            e.printStackTrace();
+            ListOfPlaylist.add(playlist);
         }
 
-        return null;
+        return ListOfPlaylist;
     }
-    */
 }
