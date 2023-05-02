@@ -25,7 +25,7 @@ import java.nio.file.Paths;
 
 public class MetadataManager {
 
-    private static final Logger logger = LoggerFactory.getLogger(MusictaggerserverApplication.class);
+    private static final Logger logger = LoggerFactory.getLogger(MetadataManager.class);
 
     public static void initMetadataJson() {
         String DATA_DIRECTORY = "src\\main\\resources\\media\\";

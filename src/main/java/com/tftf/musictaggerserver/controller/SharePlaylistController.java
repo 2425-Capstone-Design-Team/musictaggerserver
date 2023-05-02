@@ -27,8 +27,8 @@ public class SharePlaylistController {
     }
 
     @PostMapping(value="/download")
-    public void download() {
-        sharePlaylistDAO.selectAll();
+    public @ResponseBody List<PlaylistForShareDTO> download() {
+        return sharePlaylistDAO.selectAll();
     }
 
 
