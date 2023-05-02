@@ -64,7 +64,7 @@ public class MusictaggerserverApplication {
 					}
 					listmp3meta.put("list_array",meta_array);
 					try {
-						FileWriter file = new FileWriter("src\\main\\resources\\media\\meta\\meta.json");
+						FileWriter file = new FileWriter("src\\main\\resources\\metadata\\meta.json");
 						file.write(listmp3meta.toJSONString());
 						file.flush();
 						file.close();

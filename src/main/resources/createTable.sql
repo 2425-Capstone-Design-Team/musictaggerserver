@@ -1,9 +1,3 @@
-Create Table If Not Exists table1(
-    email Varchar(50) Primary Key,
-    password Binary(60),
-    nickname Varchar(20)
-);
-
 Create Table If Not Exists playtimeHistoryTable(
     email Varchar(50),
     musicId INT,
@@ -16,3 +10,15 @@ Create Table If Not Exists playlistTable(
     email Varchar(50) Primary Key,
     musicIdList Json
 );
+
+Create Table If Not Exists playlistShareTable(
+    email Varchar(50),
+    name Varchar(20),
+    musicIdList Json,
+    description Varchar(100),
+    likeCount Int,
+    copyCount Int,
+    PRIMARY KEY (email, name)
+);
+
+Drop Table playlistShareTable;
