@@ -55,7 +55,7 @@ public class MusictaggerserverApplication {
 						e.printStackTrace();
 					}
 					//todo json 업데이트
-					Path metajsonfile = Paths.get("src\\main\\resources\\media\\meta\\meta.json");
+					Path metajsonfile = Paths.get("src\\main\\resources\\metadata\\meta.json");
 					Files.deleteIfExists(metajsonfile);
 					JSONObject listmp3meta = new JSONObject();
 					JSONArray meta_array = new JSONArray();
@@ -92,15 +92,16 @@ public class MusictaggerserverApplication {
 			}catch (IOException e){
 				e.printStackTrace();
 			}
-			JSONObject listmp3meta = new JSONObject();
+			//JSONObject listmp3meta = new JSONObject();
 			JSONArray meta_array = new JSONArray();
 			for(String filename: filenames){
 				meta_array.add(getMeta(filename));
 			}
-			listmp3meta.put("list_array",meta_array);
+			//listmp3meta.put("list_array",meta_array);
 			try {
-				FileWriter file = new FileWriter("src\\main\\resources\\media\\meta\\meta.json");
-				file.write(listmp3meta.toJSONString());
+				FileWriter file = new FileWriter("src\\main\\resources\\metadata\\meta.json");
+				//file.write(listmp3meta.toJSONString());
+				file.write(meta_array.toJSONString());
 				file.flush();
 				file.close();
 			} catch (IOException e) {
@@ -134,10 +135,13 @@ public class MusictaggerserverApplication {
 
 		Tag tag = f.getTag();
 		AudioHeader audioHeader = f.getAudioHeader();
-		mp3meta.put("Artist",tag.getFirst(FieldKey.ARTIST));
-		mp3meta.put("Album",tag.getFirst(FieldKey.ALBUM));
-		mp3meta.put("Title",tag.getFirst(FieldKey.TITLE));
-		mp3meta.put("TrackLength",audioHeader.getTrackLength());
+		mp3meta.put("id",filename.substring(0,4));
+		mp3meta.put("title",tag.getFirst(FieldKey.TITLE));
+		mp3meta.put("album",tag.getFirst(FieldKey.ALBUM));
+		mp3meta.put("artist",tag.getFirst(FieldKey.ARTIST));
+		mp3meta.put("duration",audioHeader.getTrackLength()*1000);
+		mp3meta.put("path",filename);
+		mp3meta.put("artUri","artImg_"+filename.substring(3,3)+".jpg");
 
 		return mp3meta;
 	}
