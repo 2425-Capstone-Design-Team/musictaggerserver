@@ -25,7 +25,6 @@ public class MusictaggerserverApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(MusictaggerserverApplication.class, args);
 
-		/*
 		String DATA_DIRECTORY = "src\\main\\resources\\media\\";
 		File dir = new File(DATA_DIRECTORY);
 		String[] filenames = dir.list((f,name)->name.endsWith(".mp3"));
@@ -34,21 +33,21 @@ public class MusictaggerserverApplication {
 			System.out.println(filename);
 			result=result+filename;
 		}
-		File metadata = new File("src\\main\\resources\\media\\meta\\meta.txt");
+		File metadata = new File("src\\main\\resources\\metadata\\meta.txt");
 		if(metadata.exists()){
 			try {
 				BufferedReader reader = new BufferedReader(
-						new FileReader("src\\main\\resources\\media\\meta\\meta.txt")                );
+						new FileReader("src\\main\\resources\\metadata\\meta.txt")                );
 				String str;
 				while ((str = reader.readLine()) != null) {
 					System.out.println(str);
 				}
 				reader.close();
 				if (!(result==str)){
-					Path metafile = Paths.get("src\\main\\resources\\media\\meta\\meta.txt");
+					Path metafile = Paths.get("src\\main\\resources\\metadata\\meta.txt");
 					Files.deleteIfExists(metafile);
 					try{
-						BufferedWriter writer = new BufferedWriter(new FileWriter("src\\main\\resources\\media\\meta\\meta.txt",true));
+						BufferedWriter writer = new BufferedWriter(new FileWriter("src\\main\\resources\\metadata\\meta.txt",true));
 						writer.write(result);
 						writer.flush();
 						writer.close();
@@ -79,14 +78,14 @@ public class MusictaggerserverApplication {
 				throw new RuntimeException(e);
 			}
 		}else{
-			Path metafile = Paths.get("src\\main\\resources\\media\\meta\\meta.txt");
+			Path metafile = Paths.get("src\\main\\resources\\metadata\\meta.txt");
 			try {
 				Files.deleteIfExists(metafile);
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
 			try{
-				BufferedWriter writer = new BufferedWriter(new FileWriter("C:\\Users\\sskim\\Spring_Projects\\musictaggerserver\\src\\main\\resources\\media\\meta\\meta.txt",true));
+				BufferedWriter writer = new BufferedWriter(new FileWriter("src\\main\\resources\\metadata\\meta.txt",true));
 				writer.write(result);
 				writer.flush();
 				writer.close();
@@ -100,7 +99,7 @@ public class MusictaggerserverApplication {
 			}
 			listmp3meta.put("list_array",meta_array);
 			try {
-				FileWriter file = new FileWriter("C:\\Users\\sskim\\Spring_Projects\\musictaggerserver\\src\\main\\resources\\media\\meta\\meta.json");
+				FileWriter file = new FileWriter("src\\main\\resources\\media\\meta\\meta.json");
 				file.write(listmp3meta.toJSONString());
 				file.flush();
 				file.close();
@@ -114,7 +113,7 @@ public class MusictaggerserverApplication {
 	{
 		JSONObject mp3meta = new JSONObject();
 
-		File file = new File("C:\\Users\\sskim\\Spring_Projects\\musictaggerserver\\src\\main\\resources\\media\\"+ filename);
+		File file = new File("src\\main\\resources\\media\\"+ filename);
 		AudioFile f;
 
 		{
@@ -141,6 +140,5 @@ public class MusictaggerserverApplication {
 		mp3meta.put("TrackLength",audioHeader.getTrackLength());
 
 		return mp3meta;
-		*/
 	}
 }

@@ -114,21 +114,21 @@ public class MetadataController {
             System.out.println(filename);
             result=result+filename;
         }
-        File metadata = new File("src\\main\\resources\\media\\meta\\meta.txt");
+        File metadata = new File("src\\main\\resources\\metadata\\meta.txt");
         if(metadata.exists()){
             try {
                 BufferedReader reader = new BufferedReader(
-                        new FileReader("src\\main\\resources\\media\\meta\\meta.txt")                );
+                        new FileReader("src\\main\\resources\\metadata\\meta.txt")                );
                 String str;
                 while ((str = reader.readLine()) != null) {
                     System.out.println(str);
                 }
                 reader.close();
                 if (!(result==str)){
-                    Path metafile = Paths.get("src\\main\\resources\\media\\meta\\meta.txt");
+                    Path metafile = Paths.get("src\\main\\resources\\metadata\\meta.txt");
                     Files.deleteIfExists(metafile);
                     try{
-                        BufferedWriter writer = new BufferedWriter(new FileWriter("src\\main\\resources\\media\\meta\\meta.txt",true));
+                        BufferedWriter writer = new BufferedWriter(new FileWriter("src\\main\\resources\\metadata\\meta.txt",true));
                         writer.write(result);
                         writer.flush();
                         writer.close();
@@ -159,10 +159,10 @@ public class MetadataController {
                 throw new RuntimeException(e);
             }
         }else{
-            Path metafile = Paths.get("src\\main\\resources\\media\\meta\\meta.txt");
+            Path metafile = Paths.get("src\\main\\resources\\metadata\\meta.txt");
             Files.deleteIfExists(metafile);
             try{
-                BufferedWriter writer = new BufferedWriter(new FileWriter("src\\main\\resources\\media\\meta\\meta.txt",true));
+                BufferedWriter writer = new BufferedWriter(new FileWriter("src\\main\\resources\\metadata\\meta.txt",true));
                 writer.write(result);
                 writer.flush();
                 writer.close();
