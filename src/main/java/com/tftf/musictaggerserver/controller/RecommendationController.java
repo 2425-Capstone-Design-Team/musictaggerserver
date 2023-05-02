@@ -15,7 +15,7 @@ import static java.lang.CharSequence.compare;
 @RequestMapping(value="recommend")
 public class RecommendationController {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     PlaytimeHistoryDAO playtimeHistoryDAO;
     
@@ -64,7 +64,7 @@ public class RecommendationController {
                                                @RequestParam int listSize) {
 
         List<Playlist> ListOfPlaylist = new ArrayList<>();
-        List<PlaytimeHistoryDTO> historieDtoList = playtimeHistoryDAO.selectAll();
+        List<PlaytimeHistoryDTO> historyDtoList = playtimeHistoryDAO.selectAll();
 
         for (CharSequence category : surroundings.infoMap.keySet()) {
             CharSequence surroundingsInfo = surroundings.infoMap.get(category);
@@ -73,7 +73,7 @@ public class RecommendationController {
             PriorityQueue<Pair<Integer, Long>> PQ = new PriorityQueue<>(listSize,
                     (p1, p2) -> Math.toIntExact(p2.getSecond() - p1.getSecond()));
 
-            for (PlaytimeHistoryDTO dto : historieDtoList) {
+            for (PlaytimeHistoryDTO dto : historyDtoList) {
                 PlayHistory history = new PlayHistory();
                 history.importFromJson(dto.getHistoryJO());
 
@@ -93,5 +93,26 @@ public class RecommendationController {
         }
 
         return ListOfPlaylist;
+    }
+
+    @PostMapping("toprank")
+    public @ResponseBody Playlist getTopRankList(@RequestParam int listSize) {
+
+        List<PlaytimeHistoryDTO> historyDtoList = playtimeHistoryDAO.selectAll();
+
+        PriorityQueue<Pair<Integer, Long>> PQ = new PriorityQueue<>(listSize,
+                (p1, p2) -> Math.toIntExact(p2.getSecond() - p1.getSecond()));
+
+        for (PlaytimeHistoryDTO dto : historyDtoList) {
+            PQ.add(new Pair<>(dto.getMusicId(), dto.getTotalPlaytime()));
+        }
+
+        Playlist playlist = new Playlist("탑"+listSize, new ArrayList<>());
+        for (Pair<Integer, Long> p : PQ) {
+            if (listSize-- == 0) break;
+            playlist.getMusicList().add(p.getFirst());
+        }
+
+        return playlist;
     }
 }

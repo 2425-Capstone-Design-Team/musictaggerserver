@@ -7,6 +7,7 @@ Create Table If Not Exists table1(
 Create Table If Not Exists playtimeHistoryTable(
     email Varchar(50),
     musicId INT,
+    totalPlaytime LONG,
     tagInfo JSON,
     PRIMARY KEY (email, musicId)
 );
@@ -15,8 +16,3 @@ Create Table If Not Exists playlistTable(
     email Varchar(50) Primary Key,
     musicIdList Json
 );
-
-Create Table If Not Exists musicTagInfoTable(
-    musicId Int Primary Key,
-    tagInfo Json
-)

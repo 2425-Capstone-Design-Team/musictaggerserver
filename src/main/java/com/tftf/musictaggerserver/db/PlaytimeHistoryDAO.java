@@ -25,13 +25,13 @@ public class PlaytimeHistoryDAO {
     }
 
     public void insert(PlaytimeHistoryDTO dto) {
-        String insertMemberSQL = "Insert Into playtimeHistoryTable Values(?, ?, ?)";
-        jdbcTemplate.update(insertMemberSQL, dto.getEmail(), dto.getMusicId(), dto.getHistoryJO().toString());
+        String insertMemberSQL = "Insert Into playtimeHistoryTable Values(?, ?, ?, ?)";
+        jdbcTemplate.update(insertMemberSQL, dto.getEmail(), dto.getMusicId(), dto.getTotalPlaytime(), dto.getHistoryJO().toString());
     }
 
     public void update(PlaytimeHistoryDTO dto) {
-        String updateMemberSQL = "Update playtimeHistoryTable Set tagInfo = ? Where (email, musicId) = (?, ?)";
-        jdbcTemplate.update(updateMemberSQL, dto.getHistoryJO().toString(), dto.getEmail(), dto.getMusicId());
+        String updateMemberSQL = "Update playtimeHistoryTable Set totalPlaytime = ?, tagInfo = ? Where (email, musicId) = (?, ?)";
+        jdbcTemplate.update(updateMemberSQL, dto.getTotalPlaytime(), dto.getHistoryJO().toString(), dto.getEmail(), dto.getMusicId());
     }
 
     public void delete(String email, int musicId) {
@@ -42,7 +42,7 @@ public class PlaytimeHistoryDAO {
     class PlaytimeHistoryMapper implements RowMapper<PlaytimeHistoryDTO> {
         @Override
         public PlaytimeHistoryDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new PlaytimeHistoryDTO(rs.getString("email"), rs.getInt("musicId"), (JsonObject) JsonParser.parseString(rs.getString("tagInfo")));
+            return new PlaytimeHistoryDTO(rs.getString("email"), rs.getInt("musicId"),rs.getLong("totalPlaytime") , (JsonObject) JsonParser.parseString(rs.getString("tagInfo")));
         }
     }
     public PlaytimeHistoryDTO select(String email, int musicId) {
