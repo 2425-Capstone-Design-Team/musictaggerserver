@@ -59,6 +59,44 @@ public class RecommendationController {
         return personalizedList;
     }
 
+    @PostMapping("generalized")
+    public @ResponseBody List<Integer> getGeneralizedList(@RequestBody Surroundings surroundings,
+                                                           @RequestParam int listSize) {
+
+        List<PlaytimeHistoryDTO> histories = playtimeHistoryDAO.selectAll();
+
+        // PriorityQueue<Pair<MusicID, Point>>, 내림차순
+        PriorityQueue<Pair<Integer, Integer>> PQ = new PriorityQueue<>(listSize,
+                (p1, p2) -> p2.getSecond() - p1.getSecond());
+
+        for (PlaytimeHistoryDTO historyDto : histories) {
+            PlayHistory history = new PlayHistory();
+            history.importFromJson(historyDto.getHistoryJO());
+            MusicTag historyMusicTag = MusicTagger.getMusicTag(history);
+
+            int point = 0;
+            for (CharSequence category : surroundings.infoMap.keySet()) {
+                CharSequence surroundingsInfo = surroundings.infoMap.get(category);
+                CharSequence historyMusicTagInfo = historyMusicTag.tagMap.get(category);
+
+                if (compare(historyMusicTagInfo, surroundingsInfo) == 0) {
+                    point++;
+                }
+            }
+
+            PQ.add(new Pair<>(historyDto.getMusicId(), point));
+        }
+
+        ArrayList<Integer>  generalizedList = new ArrayList<>();
+
+        for (Pair<Integer, Integer> p : PQ) {
+            if (listSize-- == 0) break;
+            generalizedList.add(p.getFirst());
+        }
+
+        return generalizedList;
+    }
+
     @PostMapping("theme")
     public @ResponseBody List<Playlist> getThemeList(@RequestBody Surroundings surroundings,
                                                @RequestParam int listSize) {
