@@ -22,3 +22,5 @@ Create Table If Not Exists playlistShareTable(
 );
 
 Drop Table playlistShareTable;
+Drop Table playlistTable;
+Drop Table playtimeHistorytable;

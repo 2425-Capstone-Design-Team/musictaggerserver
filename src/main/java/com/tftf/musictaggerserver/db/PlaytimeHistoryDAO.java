@@ -62,7 +62,16 @@ public class PlaytimeHistoryDAO {
         } catch(IncorrectResultSizeDataAccessException e) {
             return null;
         }
+    }
 
+    public List<PlaytimeHistoryDTO> select(int musicID) {
+        String selectPlaytimeHistorySQL = "Select * From playtimeHistoryTable Where musicId = ?";
+
+        try {
+            return jdbcTemplate.query(selectPlaytimeHistorySQL, new PlaytimeHistoryMapper(), musicID);
+        } catch(IncorrectResultSizeDataAccessException e) {
+            return null;
+        }
     }
 
     public List<PlaytimeHistoryDTO> selectAll() {
