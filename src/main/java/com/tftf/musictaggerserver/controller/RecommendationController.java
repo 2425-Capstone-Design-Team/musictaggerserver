@@ -20,7 +20,7 @@ public class RecommendationController {
     
     // todo : 태그정보 받아와서 추천리스트 만들고 반환해주기
     @PostMapping("personalized")
-    public @ResponseBody List<Integer> getPersonalizedList(@RequestParam("userID") String userID,
+    public @ResponseBody List<Integer> getPersonalizedList(@RequestParam String userID,
                                                            @RequestBody Surroundings surroundings,
                                                            @RequestParam int listSize) {
 
@@ -113,11 +113,16 @@ public class RecommendationController {
             }
 
 
-            Playlist playlist = new Playlist(surroundingsInfo.toString(), new ArrayList<>());
+            Playlist playlist = new Playlist(
+                    "server",
+                    surroundingsInfo.toString(),
+                    surroundingsInfo.toString() + " 테마 추천 플레이리스트입니다.",
+                    new ArrayList<>()
+            );
             int sz = listSize;
             for (Pair<Integer, Long> p : PQ) {
                 if (sz-- == 0) break;
-                playlist.getMusicList().add(p.getFirst());
+                playlist.musicList.add(p.getFirst());
             }
             ThemePlaylist.add(playlist);
         }
@@ -137,10 +142,14 @@ public class RecommendationController {
             PQ.add(new Pair<>(history.musicID, history.totalPlayedTime));
         }
 
-        Playlist playlist = new Playlist("탑"+listSize, new ArrayList<>());
+        Playlist playlist = new Playlist(
+                "server",
+                "TOP" + listSize + "랭킹",
+                "TOP" + listSize + "랭킹 플레이리스트입니다.",
+                new ArrayList<>());
         for (Pair<Integer, Long> p : PQ) {
             if (listSize-- == 0) break;
-            playlist.getMusicList().add(p.getFirst());
+            playlist.musicList.add(p.getFirst());
         }
 
         return playlist;

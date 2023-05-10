@@ -2,7 +2,6 @@ package com.tftf.musictaggerserver.controller;
 
 import com.tftf.musictaggerserver.db.SharePlaylistDAO;
 import com.tftf.util.PlaylistForShare;
-import com.tftf.util.PlaylistManagerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,27 +18,31 @@ public class SharePlaylistController {
         PlaylistForShare selected = sharePlaylistDAO.select(playlist.userID, playlist.name);
 
         if (selected == null) {
-            sharePlaylistDAO.insert(selected);
+            sharePlaylistDAO.insert(playlist);
         }
         else {
-            sharePlaylistDAO.update(selected);
+            sharePlaylistDAO.update(playlist);
         }
     }
 
-    @PostMapping(value="/download")
-    public @ResponseBody List<PlaylistForShare> download() {
-        return sharePlaylistDAO.selectAll();
-    }
-
-
     @PostMapping(value="/delete")
-    public void delete(@RequestParam("userID") String userID, @RequestParam("name") String name) {
+    public void delete(@RequestParam("userID") String userID, @RequestParam String name) {
         sharePlaylistDAO.delete(userID, name);
     }
 
-    @PostMapping(value="/select", params={"userID"})
-    public @ResponseBody PlaylistForShare select(@RequestParam("userID") String userID) {
-        return sharePlaylistDAO.select(userID);
+    @PostMapping(value="/select")
+    public @ResponseBody PlaylistForShare select(@RequestParam String userID, @RequestParam String name) {
+        return sharePlaylistDAO.select(userID, name);
+    }
+
+    @PostMapping(value="/select_by_userid")
+    public @ResponseBody List<PlaylistForShare> selectByUserID(@RequestParam String userID) {
+        return sharePlaylistDAO.selectByUserID(userID);
+    }
+
+    @PostMapping(value="/select_by_name")
+    public @ResponseBody List<PlaylistForShare> selectByName(@RequestParam String name) {
+        return sharePlaylistDAO.selectByUserID(name);
     }
 
     @PostMapping(value="/selectAll")

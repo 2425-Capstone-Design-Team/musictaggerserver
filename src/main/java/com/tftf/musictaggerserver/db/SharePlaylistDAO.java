@@ -77,21 +77,21 @@ public class SharePlaylistDAO {
             return null;
         }
     }
-    public PlaylistForShare selectByUserID(String userID) {
+    public List<PlaylistForShare> selectByUserID(String userID) {
         String selectSQL = "Select * From shared_playlist_table Where userID = ?";
 
         try {
-            return jdbcTemplate.queryForObject(selectSQL, new PlaylistForShareMapper(), userID);
+            return jdbcTemplate.query(selectSQL, new PlaylistForShareMapper(), userID);
         } catch(IncorrectResultSizeDataAccessException e) {
             return null;
         }
     }
 
-    public PlaylistForShare selectByName(String name) {
+    public List<PlaylistForShare> selectByName(String name) {
         String selectSQL = "Select * From shared_playlist_table Where name = ?";
 
         try {
-            return jdbcTemplate.queryForObject(selectSQL, new PlaylistForShareMapper(), name);
+            return jdbcTemplate.query(selectSQL, new PlaylistForShareMapper(), name);
         } catch(IncorrectResultSizeDataAccessException e) {
             return null;
         }

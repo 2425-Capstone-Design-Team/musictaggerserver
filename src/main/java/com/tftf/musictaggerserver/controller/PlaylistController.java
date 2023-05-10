@@ -2,7 +2,6 @@ package com.tftf.musictaggerserver.controller;
 
 import com.tftf.musictaggerserver.db.PlaylistDAO;
 import com.tftf.util.Playlist;
-import com.tftf.util.PlaylistManagerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,13 +26,23 @@ public class PlaylistController {
     }
 
     @PostMapping(value="/delete")
-    public void delete(@RequestParam("userID") String userID, @RequestParam("name") String name) {
+    public void delete(@RequestParam String userID, @RequestParam String name) {
         playlistDAO.delete(userID, name);
     }
 
-    @PostMapping(value="/select", params={"userID"})
-    public @ResponseBody Playlist select(@RequestParam("userID") String userID, @RequestParam("name") String name) {
+    @PostMapping(value="/select")
+    public @ResponseBody Playlist select(@RequestParam String userID, @RequestParam String name) {
         return playlistDAO.select(userID, name);
+    }
+
+    @PostMapping(value="/select_by_userid")
+    public @ResponseBody List<Playlist> selectByUserID(@RequestParam String userID) {
+        return playlistDAO.selectByUserID(userID);
+    }
+
+    @PostMapping(value="/select_by_name")
+    public @ResponseBody List<Playlist> selectByName(@RequestParam String name) {
+        return playlistDAO.selectByUserID(name);
     }
 
     @PostMapping(value="/selectAll")

@@ -15,14 +15,14 @@ public class MetadataController {
     //todo : tika 라이브러리를 활용하여 음악파일에서 메타데이터 추출해보기
 
     @GetMapping("metadata")
-    public @ResponseBody Music getMetadataById(@RequestParam("id") int id){
+    public @ResponseBody Music getMetadataById(@RequestParam("musicID") int musicID){
 
         try {
             FileReader reader = new FileReader(metaPath);
             JsonArray jsonArray = (JsonArray) JsonParser.parseReader(reader);
             reader.close();
 
-            JsonObject obj = (JsonObject) jsonArray.get(id - 1000);
+            JsonObject obj = (JsonObject) jsonArray.get(musicID - 1000);
 
             return new Music(obj.get("id").getAsInt(), obj.get("title").getAsString(), obj.get("album").getAsString(), obj.get("artist").getAsString(),
                     obj.get("duration").getAsLong(), obj.get("path").getAsString(), obj.get("artUri").getAsString());
@@ -34,8 +34,8 @@ public class MetadataController {
         return null;
     }
 
-    @GetMapping(value="metadatalist", params="ids")
-    public @ResponseBody List<Music> getMetadataList(@RequestParam("ids") List<Integer> ids) {
+    @GetMapping(value="metadatalist", params="musicIDList")
+    public @ResponseBody List<Music> getMetadataList(@RequestParam("musicIDList") List<Integer> musicIDList) {
         try {
             FileReader reader = new FileReader(metaPath);
             JsonArray jsonArray = JsonParser.parseReader(reader).getAsJsonArray();
@@ -43,7 +43,7 @@ public class MetadataController {
 
             List<Music> ls = new ArrayList<>();
 
-            for (int id : ids) {
+            for (int id : musicIDList) {
                 JsonObject obj = jsonArray.get(id - 1000).getAsJsonObject();
                 ls.add(new Music(obj.get("id").getAsInt(), obj.get("title").getAsString(), obj.get("album").getAsString(), obj.get("artist").getAsString(),
                         obj.get("duration").getAsLong(), obj.get("path").getAsString(), obj.get("artUri").getAsString()));
@@ -58,8 +58,8 @@ public class MetadataController {
         return null;
     }
 
-    @GetMapping(value="metadatalist", params = {"items", "name"})
-    public @ResponseBody List<Music> getMetadataList(@RequestParam("items") List<String> items, @RequestParam("name") String name) {
+    @GetMapping(value="metadatalist", params = {"criterion", "keyword"})
+    public @ResponseBody List<Music> getMetadataList(@RequestParam("criterion") List<String> criterion, @RequestParam("keyword") String keyword) {
         try {
             FileReader reader = new FileReader(metaPath);
             JsonArray jsonArray = JsonParser.parseReader(reader).getAsJsonArray();
@@ -67,10 +67,10 @@ public class MetadataController {
 
             List<Music> ls = new ArrayList<>();
 
-            for (String s : items) {
+            for (String s : criterion) {
                 for (Object o : jsonArray) {
                     JsonObject obj = (JsonObject) o;
-                    if (obj.get(s).getAsString().equals(name)) {
+                    if (obj.get(s).getAsString().equals(keyword)) {
                         ls.add(new Music(obj.get("id").getAsInt(), obj.get("title").getAsString(), obj.get("album").getAsString(), obj.get("artist").getAsString(),
                                 obj.get("duration").getAsLong(), obj.get("path").getAsString(), obj.get("artUri").getAsString()));
                     }
