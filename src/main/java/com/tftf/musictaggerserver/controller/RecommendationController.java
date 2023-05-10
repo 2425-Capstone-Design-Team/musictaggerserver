@@ -1,7 +1,6 @@
 package com.tftf.musictaggerserver.controller;
 
-import com.google.gson.JsonObject;
-import com.tftf.musictaggerserver.db.PlaytimeHistoryDAO;
+import com.tftf.musictaggerserver.db.PlayHistoryDAO;
 import com.tftf.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,36 +16,34 @@ public class RecommendationController {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
-    PlaytimeHistoryDAO playtimeHistoryDAO;
+    PlayHistoryDAO playHistoryDAO;
     
     // todo : 태그정보 받아와서 추천리스트 만들고 반환해주기
     @PostMapping("personalized")
-    public @ResponseBody List<Integer> getPersonalizedList(@RequestParam("email") String email,
+    public @ResponseBody List<Integer> getPersonalizedList(@RequestParam("userID") String userID,
                                                            @RequestBody Surroundings surroundings,
                                                            @RequestParam int listSize) {
 
-        List<PlaytimeHistoryDTO> histories = playtimeHistoryDAO.select(email);
+        List<PlayHistory> historyList = playHistoryDAO.select(userID);
 
         // PriorityQueue<Pair<MusicID, Point>>, 내림차순
         PriorityQueue<Pair<Integer, Integer>> PQ = new PriorityQueue<>(listSize,
                 (p1, p2) -> p2.getSecond() - p1.getSecond());
 
-        for (PlaytimeHistoryDTO historyDto : histories) {
-            PlayHistory history = new PlayHistory();
-            history.importFromJson(historyDto.getHistoryJO());
+        for (PlayHistory history : historyList) {
             MusicTag historyMusicTag = MusicTagger.getMusicTag(history);
 
-            int point = 0;
+            int score = 0;
             for (CharSequence category : surroundings.infoMap.keySet()) {
                 CharSequence surroundingsInfo = surroundings.infoMap.get(category);
                 CharSequence historyMusicTagInfo = historyMusicTag.tagMap.get(category);
 
                 if (compare(historyMusicTagInfo, surroundingsInfo) == 0) {
-                    point++;
+                    score++;
                 }
             }
 
-            PQ.add(new Pair<>(historyDto.getMusicId(), point));
+            PQ.add(new Pair<>(history.musicID, score));
         }
 
         ArrayList<Integer> personalizedList = new ArrayList<>();
@@ -63,28 +60,26 @@ public class RecommendationController {
     public @ResponseBody List<Integer> getGeneralizedList(@RequestBody Surroundings surroundings,
                                                            @RequestParam int listSize) {
 
-        List<PlaytimeHistoryDTO> histories = playtimeHistoryDAO.selectAll();
+        List<PlayHistory> historyList = playHistoryDAO.selectAll();
 
         // PriorityQueue<Pair<MusicID, Point>>, 내림차순
         PriorityQueue<Pair<Integer, Integer>> PQ = new PriorityQueue<>(listSize,
                 (p1, p2) -> p2.getSecond() - p1.getSecond());
 
-        for (PlaytimeHistoryDTO historyDto : histories) {
-            PlayHistory history = new PlayHistory();
-            history.importFromJson(historyDto.getHistoryJO());
+        for (PlayHistory history : historyList) {
             MusicTag historyMusicTag = MusicTagger.getMusicTag(history);
 
-            int point = 0;
+            int score = 0;
             for (CharSequence category : surroundings.infoMap.keySet()) {
                 CharSequence surroundingsInfo = surroundings.infoMap.get(category);
                 CharSequence historyMusicTagInfo = historyMusicTag.tagMap.get(category);
 
                 if (compare(historyMusicTagInfo, surroundingsInfo) == 0) {
-                    point++;
+                    score++;
                 }
             }
 
-            PQ.add(new Pair<>(historyDto.getMusicId(), point));
+            PQ.add(new Pair<>(history.musicID, score));
         }
 
         ArrayList<Integer>  generalizedList = new ArrayList<>();
@@ -101,8 +96,8 @@ public class RecommendationController {
     public @ResponseBody List<Playlist> getThemeList(@RequestBody Surroundings surroundings,
                                                @RequestParam int listSize) {
 
-        List<Playlist> ListOfPlaylist = new ArrayList<>();
-        List<PlaytimeHistoryDTO> historyDtoList = playtimeHistoryDAO.selectAll();
+        List<Playlist> ThemePlaylist = new ArrayList<>();
+        List<PlayHistory> historyList = playHistoryDAO.selectAll();
 
         for (CharSequence category : surroundings.infoMap.keySet()) {
             CharSequence surroundingsInfo = surroundings.infoMap.get(category);
@@ -111,13 +106,10 @@ public class RecommendationController {
             PriorityQueue<Pair<Integer, Long>> PQ = new PriorityQueue<>(listSize,
                     (p1, p2) -> Math.toIntExact(p2.getSecond() - p1.getSecond()));
 
-            for (PlaytimeHistoryDTO dto : historyDtoList) {
-                PlayHistory history = new PlayHistory();
-                history.importFromJson(dto.getHistoryJO());
+            for (PlayHistory history : historyList) {
+                Long score = history.getPlayedTime(category, surroundingsInfo);
 
-                Long point = history.getPlaytime(category, surroundingsInfo);
-
-                PQ.add(new Pair<>(dto.getMusicId(), point));
+                PQ.add(new Pair<>(history.musicID, score));
             }
 
 
@@ -127,22 +119,22 @@ public class RecommendationController {
                 if (sz-- == 0) break;
                 playlist.getMusicList().add(p.getFirst());
             }
-            ListOfPlaylist.add(playlist);
+            ThemePlaylist.add(playlist);
         }
 
-        return ListOfPlaylist;
+        return ThemePlaylist;
     }
 
     @PostMapping("toprank")
     public @ResponseBody Playlist getTopRankList(@RequestParam int listSize) {
 
-        List<PlaytimeHistoryDTO> historyDtoList = playtimeHistoryDAO.selectAll();
+        List<PlayHistory> historyList = playHistoryDAO.selectAll();
 
         PriorityQueue<Pair<Integer, Long>> PQ = new PriorityQueue<>(listSize,
                 (p1, p2) -> Math.toIntExact(p2.getSecond() - p1.getSecond()));
 
-        for (PlaytimeHistoryDTO dto : historyDtoList) {
-            PQ.add(new Pair<>(dto.getMusicId(), dto.getTotalPlaytime()));
+        for (PlayHistory history : historyList) {
+            PQ.add(new Pair<>(history.musicID, history.totalPlayedTime));
         }
 
         Playlist playlist = new Playlist("탑"+listSize, new ArrayList<>());

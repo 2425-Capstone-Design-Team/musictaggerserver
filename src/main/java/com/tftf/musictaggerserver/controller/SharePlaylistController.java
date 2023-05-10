@@ -1,7 +1,7 @@
 package com.tftf.musictaggerserver.controller;
 
 import com.tftf.musictaggerserver.db.SharePlaylistDAO;
-import com.tftf.util.PlaylistForShareDTO;
+import com.tftf.util.PlaylistForShare;
 import com.tftf.util.PlaylistManagerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,35 +15,35 @@ public class SharePlaylistController {
     private SharePlaylistDAO sharePlaylistDAO;
 
     @PostMapping(value="/upload")
-    public void upload(@RequestBody PlaylistForShareDTO dto) {
-        PlaylistForShareDTO loadedDto = sharePlaylistDAO.select(dto.getEmail(), dto.getName());
+    public void upload(@RequestBody PlaylistForShare playlist) {
+        PlaylistForShare selected = sharePlaylistDAO.select(playlist.userID, playlist.name);
 
-        if (loadedDto == null) {
-            sharePlaylistDAO.insert(dto);
+        if (selected == null) {
+            sharePlaylistDAO.insert(selected);
         }
         else {
-            sharePlaylistDAO.update(dto);
+            sharePlaylistDAO.update(selected);
         }
     }
 
     @PostMapping(value="/download")
-    public @ResponseBody List<PlaylistForShareDTO> download() {
+    public @ResponseBody List<PlaylistForShare> download() {
         return sharePlaylistDAO.selectAll();
     }
 
 
     @PostMapping(value="/delete")
-    public void delete(@RequestParam("email") String email, @RequestParam("name") String name) {
-        sharePlaylistDAO.delete(email, name);
+    public void delete(@RequestParam("userID") String userID, @RequestParam("name") String name) {
+        sharePlaylistDAO.delete(userID, name);
     }
 
-    @PostMapping(value="/select", params={"email"})
-    public @ResponseBody PlaylistForShareDTO select(@RequestParam("email") String email) {
-        return sharePlaylistDAO.select(email);
+    @PostMapping(value="/select", params={"userID"})
+    public @ResponseBody PlaylistForShare select(@RequestParam("userID") String userID) {
+        return sharePlaylistDAO.select(userID);
     }
 
     @PostMapping(value="/selectAll")
-    public @ResponseBody List<PlaylistForShareDTO> selectAll() {
+    public @ResponseBody List<PlaylistForShare> selectAll() {
         return sharePlaylistDAO.selectAll();
     }
 }
