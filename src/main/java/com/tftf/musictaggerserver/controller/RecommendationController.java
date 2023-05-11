@@ -20,7 +20,7 @@ public class RecommendationController {
     
     // todo : 태그정보 받아와서 추천리스트 만들고 반환해주기
     @PostMapping("personalized")
-    public @ResponseBody List<Integer> getPersonalizedList(@RequestParam String userID,
+    public @ResponseBody Playlist getPersonalizedList(@RequestParam String userID,
                                                            @RequestBody Surroundings surroundings,
                                                            @RequestParam int listSize) {
 
@@ -46,18 +46,22 @@ public class RecommendationController {
             PQ.add(new Pair<>(history.musicID, score));
         }
 
-        ArrayList<Integer> personalizedList = new ArrayList<>();
+        Playlist playlist = new Playlist(
+                "server",
+                "개인 맞춤 추천 리스트",
+                "당신의 음악 취향에 기반하여 추천된 플레이리스트입니다.",
+                new ArrayList<>());
 
         for (Pair<Integer, Integer> p : PQ) {
             if (listSize-- == 0) break;
-            personalizedList.add(p.getFirst());
+            playlist.musicList.add(p.getFirst());
         }
 
-        return personalizedList;
+        return playlist;
     }
 
     @PostMapping("generalized")
-    public @ResponseBody List<Integer> getGeneralizedList(@RequestBody Surroundings surroundings,
+    public @ResponseBody Playlist getGeneralizedList(@RequestBody Surroundings surroundings,
                                                            @RequestParam int listSize) {
 
         List<PlayHistory> historyList = playHistoryDAO.selectAll();
@@ -82,14 +86,18 @@ public class RecommendationController {
             PQ.add(new Pair<>(history.musicID, score));
         }
 
-        ArrayList<Integer>  generalizedList = new ArrayList<>();
+        Playlist playlist = new Playlist(
+                "server",
+                "보편 맞춤 추천 리스트",
+                "사용자들의 보편적인 음악 취향에 기반하여 추천된 플레이리스트입니다.",
+                new ArrayList<>());
 
         for (Pair<Integer, Integer> p : PQ) {
             if (listSize-- == 0) break;
-            generalizedList.add(p.getFirst());
+            playlist.musicList.add(p.getFirst());
         }
 
-        return generalizedList;
+        return playlist;
     }
 
     @PostMapping("theme")
