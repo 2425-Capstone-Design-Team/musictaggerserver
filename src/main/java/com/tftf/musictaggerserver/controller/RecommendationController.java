@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
-import static java.lang.CharSequence.compare;
-
 @RestController
 @RequestMapping(value="recommend")
 public class RecommendationController {
@@ -34,11 +32,11 @@ public class RecommendationController {
             MusicTag historyMusicTag = MusicTagger.getMusicTag(history);
 
             int score = 0;
-            for (CharSequence category : surroundings.infoMap.keySet()) {
-                CharSequence surroundingsInfo = surroundings.infoMap.get(category);
-                CharSequence historyMusicTagInfo = historyMusicTag.tagMap.get(category);
+            for (String category : surroundings.infoMap.keySet()) {
+                String surroundingsInfo = surroundings.infoMap.get(category);
+                String historyMusicTagInfo = historyMusicTag.tagMap.get(category);
 
-                if (compare(historyMusicTagInfo, surroundingsInfo) == 0) {
+                if (historyMusicTagInfo.equals(surroundingsInfo)) {
                     score++;
                 }
             }
@@ -54,7 +52,7 @@ public class RecommendationController {
 
         for (Pair<Integer, Integer> p : PQ) {
             if (listSize-- == 0) break;
-            playlist.musicList.add(p.getFirst());
+            playlist.musicIDList.add(p.getFirst());
         }
 
         return playlist;
@@ -74,11 +72,11 @@ public class RecommendationController {
             MusicTag historyMusicTag = MusicTagger.getMusicTag(history);
 
             int score = 0;
-            for (CharSequence category : surroundings.infoMap.keySet()) {
-                CharSequence surroundingsInfo = surroundings.infoMap.get(category);
-                CharSequence historyMusicTagInfo = historyMusicTag.tagMap.get(category);
+            for (String category : surroundings.infoMap.keySet()) {
+                String surroundingsInfo = surroundings.infoMap.get(category);
+                String historyMusicTagInfo = historyMusicTag.tagMap.get(category);
 
-                if (compare(historyMusicTagInfo, surroundingsInfo) == 0) {
+                if (historyMusicTagInfo.equals(surroundingsInfo)) {
                     score++;
                 }
             }
@@ -94,7 +92,7 @@ public class RecommendationController {
 
         for (Pair<Integer, Integer> p : PQ) {
             if (listSize-- == 0) break;
-            playlist.musicList.add(p.getFirst());
+            playlist.musicIDList.add(p.getFirst());
         }
 
         return playlist;
@@ -107,8 +105,8 @@ public class RecommendationController {
         List<Playlist> ThemePlaylist = new ArrayList<>();
         List<PlayHistory> historyList = playHistoryDAO.selectAll();
 
-        for (CharSequence category : surroundings.infoMap.keySet()) {
-            CharSequence surroundingsInfo = surroundings.infoMap.get(category);
+        for (String category : surroundings.infoMap.keySet()) {
+            String surroundingsInfo = surroundings.infoMap.get(category);
 
             // PriorityQueue<Pair<MusicID, Point>>, 내림차순
             PriorityQueue<Pair<Integer, Long>> PQ = new PriorityQueue<>(listSize,
@@ -130,7 +128,7 @@ public class RecommendationController {
             int sz = listSize;
             for (Pair<Integer, Long> p : PQ) {
                 if (sz-- == 0) break;
-                playlist.musicList.add(p.getFirst());
+                playlist.musicIDList.add(p.getFirst());
             }
             ThemePlaylist.add(playlist);
         }
@@ -157,7 +155,7 @@ public class RecommendationController {
                 new ArrayList<>());
         for (Pair<Integer, Long> p : PQ) {
             if (listSize-- == 0) break;
-            playlist.musicList.add(p.getFirst());
+            playlist.musicIDList.add(p.getFirst());
         }
 
         return playlist;

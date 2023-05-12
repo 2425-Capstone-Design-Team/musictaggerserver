@@ -15,8 +15,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import com.tftf.util.PlaylistManagerDTO;
-
 @Repository
 public class PlaylistDAO {
     @Autowired
@@ -32,15 +30,15 @@ public class PlaylistDAO {
                 playlist.userID,
                 playlist.name,
                 playlist.description,
-                JsonConverter.getJsonFromIntList(playlist.musicList).toString()
+                JsonConverter.getJsonFromIntList(playlist.musicIDList).toString()
         );
     }
 
     public void update(Playlist playlist) {
-        String updateSQL = "Update user_playlist_table Set description = ?, musicId_list = ? Where (userID, name) = (?, ?)";
+        String updateSQL = "Update user_playlist_table Set description = ?, musicID_list = ? Where (userID, name) = (?, ?)";
         jdbcTemplate.update(updateSQL,
                 playlist.description,
-                JsonConverter.getJsonFromIntList(playlist.musicList).toString(),
+                JsonConverter.getJsonFromIntList(playlist.musicIDList).toString(),
                 playlist.userID,
                 playlist.name
         );

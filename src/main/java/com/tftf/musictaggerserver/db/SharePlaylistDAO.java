@@ -31,7 +31,7 @@ public class SharePlaylistDAO {
                 playlist.userID,
                 playlist.name,
                 playlist.description,
-                JsonConverter.getJsonFromIntList(playlist.musicList).toString(),
+                JsonConverter.getJsonFromIntList(playlist.musicIDList).toString(),
                 playlist.likeCount,
                 playlist.downloadCount
         );
@@ -41,7 +41,7 @@ public class SharePlaylistDAO {
         String updateSQL = "Update shared_playlist_table Set description = ?, musicID_list = ?, like_count = ?, download_count = ? Where (userID, name) = (?, ?)";
         jdbcTemplate.update(updateSQL,
                 playlist.description,
-                JsonConverter.getJsonFromIntList(playlist.musicList).toString(),
+                JsonConverter.getJsonFromIntList(playlist.musicIDList).toString(),
                 playlist.likeCount,
                 playlist.downloadCount,
                 playlist.userID,

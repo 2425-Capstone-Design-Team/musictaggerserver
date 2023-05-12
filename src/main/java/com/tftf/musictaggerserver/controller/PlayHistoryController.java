@@ -13,18 +13,20 @@ public class PlayHistoryController {
     private PlayHistoryDAO playHistoryDAO;
 
     @PostMapping(value="/cumulate")
-    public void insert(@RequestBody PlayInform dto) {
-        PlayHistory history = playHistoryDAO.select(dto.getUserID(), dto.getMusicID());
+    public boolean insert(@RequestBody PlayInform inform) {
+        PlayHistory history = playHistoryDAO.select(inform.getUserID(), inform.getMusicID());
 
         if (history == null) {
-            history = new PlayHistory(dto.getUserID(), dto.getMusicID());
-            history.cumulatePlayedTime(dto.getPlayedTime(), dto.getSurroundings());
+            history = new PlayHistory(inform.getUserID(), inform.getMusicID());
+            history.cumulatePlayedTime(inform.getPlayedTime(), inform.getSurroundings());
             playHistoryDAO.insert(history);
         }
         else {
-            history.cumulatePlayedTime(dto.getPlayedTime(), dto.getSurroundings());
+            history.cumulatePlayedTime(inform.getPlayedTime(), inform.getSurroundings());
             playHistoryDAO.update(history);
         }
+
+        return true;
     }
 
 /*

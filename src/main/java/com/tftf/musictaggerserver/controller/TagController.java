@@ -16,18 +16,32 @@ public class TagController {
     PlayHistoryDAO playHistoryDAO;
 
     @PostMapping("personal")
-    public @ResponseBody MusicTag getPersonalMusicTag(@RequestParam String userID, @RequestParam int musicID) {
+    public @ResponseBody List<MusicTag> getPersonalMusicTagList(@RequestParam String userID, @RequestParam List<Integer> musicIDList) {
 
-        PlayHistory history = playHistoryDAO.select(userID, musicID);
+        List<MusicTag> tagList = new ArrayList<>();
+        for (int musicID : musicIDList) {
+            PlayHistory history = playHistoryDAO.select(userID, musicID);
 
-        return MusicTagger.getMusicTag(history);
+            if (history == null) {
+                tagList.add(new MusicTag());
+            }
+            else {
+                tagList.add(MusicTagger.getMusicTag(history));
+            }
+        }
+
+        return tagList;
     }
 
     @PostMapping("general")
-    public @ResponseBody MusicTag getGeneralMusicTag(@RequestParam int musicID) {
+    public @ResponseBody List<MusicTag> getGeneralMusicTagList(@RequestParam List<Integer> musicIDList) {
 
-        List<PlayHistory> historyList = playHistoryDAO.select(musicID);
+        List<MusicTag> tagList = new ArrayList<>();
+        for (int musicID : musicIDList) {
+            List<PlayHistory> historyList = playHistoryDAO.select(musicID);
+            tagList.add(MusicTagger.getMusicTag(historyList));
+        }
 
-        return MusicTagger.getMusicTag(historyList);
+        return tagList;
     }
 }
