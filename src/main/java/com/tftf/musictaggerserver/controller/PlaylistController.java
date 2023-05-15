@@ -3,6 +3,7 @@ package com.tftf.musictaggerserver.controller;
 import com.tftf.musictaggerserver.db.PlaylistDAO;
 import com.tftf.util.Playlist;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,16 +14,24 @@ public class PlaylistController {
     @Autowired
     private PlaylistDAO playlistDAO;
 
-    @PostMapping(value="/save")
-    public void save(@RequestBody Playlist playlist) {
-        Playlist selected = playlistDAO.select(playlist.userID, playlist.name);
-
-        if (selected == null) {
+    @PostMapping(value="/insert")
+    public Boolean insert(@RequestBody Playlist playlist) {
+        try {
             playlistDAO.insert(playlist);
+        } catch (DuplicateKeyException e) {
+            return false;
         }
-        else {
+        return true;
+    }
+
+    @PostMapping(value="/update")
+    public Boolean update(@RequestBody Playlist playlist) {
+        try {
             playlistDAO.update(playlist);
+        } catch (Exception e) {
+            return false;
         }
+        return true;
     }
 
     @PostMapping(value="/delete")

@@ -72,7 +72,7 @@ public class PlaylistDAO {
     }
 
     public List<Playlist> selectByUserID(String userID) {
-        String selectSQL = "Select * From user_playlist_table Where userID = ?";
+        String selectSQL = "Select * From user_playlist_table Where userID = ? Order By name";
 
         try {
             return jdbcTemplate.query(selectSQL, new PlaylistMapper(), userID);

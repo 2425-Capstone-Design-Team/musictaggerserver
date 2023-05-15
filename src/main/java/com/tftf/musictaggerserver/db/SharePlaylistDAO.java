@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tftf.util.JsonConverter;
-import com.tftf.util.PlaylistForShare;
+import com.tftf.util.SharedPlaylist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -25,7 +25,7 @@ public class SharePlaylistDAO {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public void insert(PlaylistForShare playlist) {
+    public void insert(SharedPlaylist playlist) {
         String insertSQL = "Insert Into shared_playlist_table Values(?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(insertSQL,
                 playlist.userID,
@@ -37,7 +37,7 @@ public class SharePlaylistDAO {
         );
     }
 
-    public void update(PlaylistForShare playlist) {
+    public void update(SharedPlaylist playlist) {
         String updateSQL = "Update shared_playlist_table Set description = ?, musicID_list = ?, like_count = ?, download_count = ? Where (userID, name) = (?, ?)";
         jdbcTemplate.update(updateSQL,
                 playlist.description,
@@ -54,10 +54,10 @@ public class SharePlaylistDAO {
         jdbcTemplate.update(deleteSQL, email, name);
     }
 
-    class PlaylistForShareMapper implements RowMapper<PlaylistForShare> {
+    class PlaylistForShareMapper implements RowMapper<SharedPlaylist> {
         @Override
-        public PlaylistForShare mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new PlaylistForShare(
+        public SharedPlaylist mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new SharedPlaylist(
                     rs.getString("userID"),
                     rs.getString("name"),
                     rs.getString("description"),
@@ -68,7 +68,7 @@ public class SharePlaylistDAO {
         }
     }
 
-    public PlaylistForShare select(String userID, String name) {
+    public SharedPlaylist select(String userID, String name) {
         String selectSQL = "Select * From shared_playlist_table Where (userID, name) = (?, ?)";
 
         try {
@@ -77,8 +77,8 @@ public class SharePlaylistDAO {
             return null;
         }
     }
-    public List<PlaylistForShare> selectByUserID(String userID) {
-        String selectSQL = "Select * From shared_playlist_table Where userID = ?";
+    public List<SharedPlaylist> selectByUserID(String userID) {
+        String selectSQL = "Select * From shared_playlist_table Where userID = ? Order By name";
 
         try {
             return jdbcTemplate.query(selectSQL, new PlaylistForShareMapper(), userID);
@@ -87,7 +87,7 @@ public class SharePlaylistDAO {
         }
     }
 
-    public List<PlaylistForShare> selectByName(String name) {
+    public List<SharedPlaylist> selectByName(String name) {
         String selectSQL = "Select * From shared_playlist_table Where name = ?";
 
         try {
@@ -97,7 +97,7 @@ public class SharePlaylistDAO {
         }
     }
 
-    public List<PlaylistForShare> selectAll() {
+    public List<SharedPlaylist> selectAll() {
         String selectAllSQL = "Select * From shared_playlist_table";
         return jdbcTemplate.query(selectAllSQL, new PlaylistForShareMapper());
     }

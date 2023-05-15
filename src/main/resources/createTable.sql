@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS user_playlist_table(
 CREATE TABLE IF NOT EXISTS shared_playlist_table(
     userID VARCHAR(50),
     name VARCHAR(20),
-    description VARCHAR(100),
+    description VARCHAR(200),
     musicID_list JSON,
     like_count INT,
     download_count INT,
