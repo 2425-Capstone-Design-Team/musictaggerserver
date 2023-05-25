@@ -70,7 +70,7 @@ public class MetadataController {
             for (String s : criterion) {
                 for (Object o : jsonArray) {
                     JsonObject obj = (JsonObject) o;
-                    if (obj.get(s).getAsString().equals(keyword)) {
+                    if (obj.get(s).getAsString().contains(keyword)) {
                         ls.add(new Music(obj.get("id").getAsInt(), obj.get("title").getAsString(), obj.get("album").getAsString(), obj.get("artist").getAsString(),
                                 obj.get("duration").getAsLong(), obj.get("path").getAsString(), obj.get("artUri").getAsString()));
                     }

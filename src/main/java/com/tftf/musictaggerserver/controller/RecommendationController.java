@@ -99,7 +99,43 @@ public class RecommendationController {
     }
 
     @PostMapping("theme")
-    public @ResponseBody List<Playlist> getThemeList(@RequestBody Surroundings surroundings,
+    public @ResponseBody List<Playlist> getThemeList() {
+        List<Playlist> themeLists = new ArrayList<>();
+
+        themeLists.add(new Playlist(
+                "server",
+                "헤어진 날",
+                "헤어진 연인들이 많이 찾는 노래들",
+                new ArrayList<>(List.of(1010, 1025, 1026, 1029, 1030, 1031, 1032, 1034, 1035, 1036, 1041))
+                )
+        );
+        themeLists.add(new Playlist(
+                        "server",
+                        "사랑에 빠졌을 때",
+                        "사랑에 빠진 그 순간 많이 찾게 되는 노래들",
+                        new ArrayList<>(List.of(1009, 1013, 1019, 1020, 1021, 1027, 1038))
+                )
+        );
+        themeLists.add(new Playlist(
+                        "server",
+                        "지나간 연인이 그리울 때",
+                        "그 때가 기억날 때 많이 듣는 노래",
+                        new ArrayList<>(List.of(1003, 1004, 1011, 1017, 1018, 1023, 1026, 1033, 1037))
+                )
+        );
+        themeLists.add(new Playlist(
+                        "server",
+                        "나들이 갈 때",
+                        "함께 나들이!",
+                        new ArrayList<>(List.of(1006, 1007, 1008, 1012, 1014, 1015, 1016, 1021, 1028))
+                )
+        );
+
+        return themeLists;
+    }
+
+    @PostMapping("surroundings")
+    public @ResponseBody List<Playlist> getSurroundingsList(@RequestBody Surroundings surroundings,
                                                @RequestParam int listSize) {
 
         List<Playlist> ThemePlaylist = new ArrayList<>();
