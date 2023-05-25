@@ -61,7 +61,8 @@ public class DataGenerateController {
     public boolean generate_history(@RequestParam int count) {
 
         for (int t = 0; t < count; t++) {
-            String userID = getRandomEmail();
+            // String userID = getRandomEmail();
+            String userID = "1234@naver.com";
             int musicID = 1000 + random.nextInt(42);
 
             int generateCount = 3 + random.nextInt(4);
